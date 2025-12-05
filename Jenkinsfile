@@ -17,8 +17,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo ' Checking out source code...'
-                checkout scm
+                git branch: 'main', url: 'https://github.com/gobinda1990/wb-impact-dashboard.git'
+               
             }
         }
 
