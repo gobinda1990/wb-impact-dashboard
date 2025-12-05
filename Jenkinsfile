@@ -34,9 +34,9 @@ pipeline {
                     docker rm -f ${IMAGE_NAME} || true
 
                     # Run new container
-                    docker run -d --name ${IMAGE_NAME} -p 8080:80 ${IMAGE_NAME}:latest
+                    docker run -d --name ${IMAGE_NAME} -p 8084:80 ${IMAGE_NAME}:latest
                 """
-                echo '✅ Application deployed locally at http://localhost:8080'
+                echo '✅ Application deployed locally at http://localhost:8084'
             }
         }
     }
