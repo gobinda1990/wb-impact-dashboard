@@ -2,20 +2,22 @@ pipeline {
     agent any
 
     environment {
-        // Docker image settings
-        IMAGE_NAME = 'react-frontend'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        // 🧠 SonarQube configuration
+        SONARQUBE_SERVER = 'sonar'                   // Name from Jenkins global config
+        SONAR_HOST_URL = 'http://10.153.43.8:9000'   // SonarQube server URL
+        SCANNER_HOME = tool 'sonar-scanner'          // SonarQube scanner tool name
+        SONAR_PROJECT_KEY = 'wb-impact-dashboard'
+        SONAR_PROJECT_NAME = 'wb-impact-dashboard'
 
-        // SonarQube settings
-        SONARQUBE_ENV = 'SonarQubeServer'   // Jenkins SonarQube server name (Manage Jenkins > Configure System)
-        SONAR_PROJECT_KEY = 'react-frontend'
-        SONAR_PROJECT_NAME = 'React Frontend'
+        // Docker image info
+        IMAGE_NAME = 'wb-impact-dashboard'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo '🔹 Checking out source code...'
+                echo ' Checking out source code...'
                 checkout scm
             }
         }
@@ -23,15 +25,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo '🔍 Running SonarQube analysis...'
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    // Using the SonarQube Scanner (must be installed in Jenkins)
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh """
-                        npx sonar-scanner \
+                        ${SCANNER_HOME}/bin/sonar-scanner \
                           -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                          -Dsonar.projectName='${SONAR_PROJECT_NAME}' \
+                          -Dsonar.projectName=${SONAR_PROJECT_NAME} \
+                          -Dsonar.host.url=${SONAR_HOST_URL} \
                           -Dsonar.sources=src \
-                          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                          -Dsonar.sourceEncoding=UTF-8
+                          -Dsonar.language=js \
+                          -Dsonar.sourceEncoding=UTF-8 \
+                          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                     """
                 }
             }
@@ -39,7 +42,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo '🐳 Building Docker image for React app...'
+                echo 'Building Docker image for React app...'
                 sh """
                     docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                     docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
@@ -49,9 +52,9 @@ pipeline {
 
         stage('Deploy Locally') {
             steps {
-                echo '🚀 Deploying container locally...'
+                echo ' Deploying container locally...'
 
-                // Stop old container (if running)
+                // Stop and remove old container if it exists
                 sh """
                     docker ps -q --filter "name=${IMAGE_NAME}" | grep -q . && docker stop ${IMAGE_NAME} || true
                     docker rm -f ${IMAGE_NAME} || true
@@ -62,7 +65,7 @@ pipeline {
                     docker run -d --name ${IMAGE_NAME} -p 8080:80 ${IMAGE_NAME}:latest
                 """
 
-                echo '✅ App deployed locally at http://localhost:8080'
+                echo 'App deployed locally at http://localhost:8080'
             }
         }
     }
@@ -73,10 +76,10 @@ pipeline {
             cleanWs()
         }
         success {
-            echo '🎉 Pipeline completed successfully!'
+            echo ' Pipeline completed successfully!'
         }
         failure {
-            echo '❌ Pipeline failed!'
+            echo 'Pipeline failed!'
         }
     }
 }
