@@ -1,0 +1,49 @@
+.home-container {
+  min-height: 85vh;
+  background-color: #f8fafc;
+}
+
+.project-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: all 0.3s ease-in-out;
+  background:white;
+  cursor: pointer;
+}
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 123, 255, 0.15);
+}
+.project-card .card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #0c4d94, #00b4d8);
+}
+.project-card .btn {
+  transition: all 0.2s ease-in-out;
+}
+.project-card .btn:hover {
+  background-color: #007bff;
+  color: #ffffff;
+}
+input:focus {
+  box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
+  border-color: #007bff;
+}
+.fade-in {
+  animation: fadeIn 0.4s ease-in;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

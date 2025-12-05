@@ -1,0 +1,192 @@
+/* ======== Global Page Layout ======== */
+.container-fluid {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #212529;
+}
+
+h3 {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* ======== Table Styling ======== */
+.table {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.table thead th {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.85rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f9fbfd;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #e8f1fc;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* ======== Table Cells ======== */
+.table td {
+  vertical-align: middle;
+  font-size: 0.92rem;
+}
+
+.table .badge {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.4em 0.6em;
+  border-radius: 0.5rem;
+}
+
+/* ======== Search Input ======== */
+.input-group-text {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+}
+
+.input-group .form-control {
+  border-left: none;
+  box-shadow: none !important;
+}
+
+/* ======== Pagination ======== */
+.pagination {
+  margin-top: 0.75rem;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+.pagination .page-link {
+  color: #007bff;
+  border-radius: 6px;
+}
+
+/* ======== Cards ======== */
+.card {
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border: none;
+}
+
+.card h5 {
+  color: #004b8d;
+}
+
+/* ======== Modal ======== */
+.modal-content {
+  border-radius: 0.75rem;
+  border: none;
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+/* ======== Form Fields ======== */
+.form-label {
+  font-weight: 600;
+  color: #002147;
+  margin-bottom: 0.25rem;
+}
+
+.form-select,
+.form-control {
+  border-radius: 0.5rem;
+  font-size: 0.92rem;
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: #f1f3f6 !important;
+  color: #6c757d;
+  opacity: 1;
+}
+
+/* ======== Buttons ======== */
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #005dc1;
+}
+
+/* ======== Dropdown Menu ======== */
+.dropdown-menu {
+  border-radius: 0.5rem;
+  border: 1px solid #d6d9dc;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  padding: 0.5rem 0.75rem;
+}
+
+.dropdown-toggle {
+  border-radius: 0.5rem !important;
+}
+
+/* ======== Scrollbars ======== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f3f6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 10px;
+}
+
+/* ======== Responsive Adjustments ======== */
+@media (max-width: 992px) {
+  .table thead {
+    font-size: 0.75rem;
+  }
+
+  .table td {
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  h3 {
+    font-size: 1.25rem;
+  }
+}

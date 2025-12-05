@@ -1,0 +1,180 @@
+/* ---------- Global Wrapper ---------- */
+.signup-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e8eef7 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 15px;
+}
+
+/* ---------- Card Styling ---------- */
+.signup-card {
+  width: 100%;
+  max-width: 850px;
+  border: none;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.signup-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Header Section ---------- */
+.signup-card img {
+  border-radius: 50%;
+  background: #f8f9fa;
+  padding: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.signup-card h4 {
+  font-weight: 600;
+  color: #1e3a8a;
+  letter-spacing: 0.3px;
+}
+
+/* ---------- Form Elements ---------- */
+form label {
+  font-weight: 500;
+  color: #334155;
+}
+
+form .form-control,
+form .form-select {
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  transition: all 0.25s ease;
+}
+
+form .form-control:focus,
+form .form-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* ---------- Button Styling ---------- */
+button.btn-primary {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+  border: none;
+  border-radius: 0.5rem;
+  transition: all 0.25s ease;
+  font-weight: 500;
+}
+
+button.btn-primary:hover {
+  background: linear-gradient(90deg, #1d4ed8, #1e40af);
+  transform: scale(1.02);
+}
+
+button.btn-outline-secondary {
+  border-radius: 0.5rem;
+}
+
+/* ---------- Captcha Section ---------- */
+.captcha-box {
+  font-size: 1.25rem;
+  letter-spacing: 3px;
+  user-select: none;
+  border: 2px dashed #94a3b8;
+  background: #f1f5f9;
+  display: inline-block;
+}
+
+.captcha-box:hover {
+  background: #e2e8f0;
+}
+
+.text-danger.small {
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+/* ---------- Alert Messages ---------- */
+.alert {
+  font-weight: 500;
+  text-align: center;
+  border-radius: 0.6rem;
+  padding: 12px;
+}
+
+/* ---------- Responsive Adjustments ---------- */
+@media (max-width: 768px) {
+  .signup-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .signup-card h4 {
+    font-size: 1.1rem;
+  }
+
+  .captcha-box {
+    font-size: 1rem;
+    letter-spacing: 2px;
+  }
+}
+
+/* ---------- Smooth Fade-in Animation ---------- */
+.signup-card {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Link Styling ---------- */
+.signup-card a {
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.signup-card a:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+/* ---------- Spinner Alignment ---------- */
+button .spinner-border {
+  vertical-align: middle;
+  margin-bottom: 2px;
+}
+
+/* ---------- Date Picker Styling ---------- */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  padding: 0.55rem 0.75rem;
+  transition: all 0.25s ease;
+  background-color: #fff;
+  font-size: 0.95rem;
+}
+
+.react-datepicker__input-container input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+  outline: none;
+}
+
+.react-datepicker__input-container input::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+}
