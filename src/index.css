@@ -1,0 +1,109 @@
+/* -------- Reset unwanted Vite defaults -------- */
+:root {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #212529;
+  background-color: #f8f9fa;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Remove default flex centering from Vite */
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Ensure #root takes full width */
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+}
+
+/* -------- Global Links -------- */
+a {
+  font-weight: 500;
+  color: #004b8d;
+  text-decoration: none;
+}
+a:hover {
+  color: #002147;
+}
+
+/* -------- Buttons -------- */
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #004b8d;
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+button:hover {
+  background-color: #002f5e;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* -------- Sidebar -------- */
+.sidebar {
+  transition: width 0.3s ease, transform 0.3s ease;
+  background: linear-gradient(180deg, #002147 0%, #004b8d 100%);
+  color: white;
+}
+.sidebar.closed {
+  width: 0 !important;
+  transform: translateX(-100%);
+}
+@media (max-width: 992px) {
+  .sidebar {
+    position: fixed;
+    z-index: 1050;
+  }
+  .navbar {
+    z-index: 1100;
+  }
+}
+
+/* -------- Hover card animation -------- */
+.hover-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* -------- Responsive Dashboard Layout -------- */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+.dashboard-layout .content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+@media (max-width: 992px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  .dashboard-layout .content {
+    padding: 1rem;
+  }
+}
