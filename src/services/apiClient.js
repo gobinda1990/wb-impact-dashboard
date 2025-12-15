@@ -7,7 +7,7 @@ export const authClient = axios.create({
 });
 
 export const dashboardClient = axios.create({
-  baseURL: 'http://10.153.45.169:8082/api',
+  baseURL: 'http://10.153.43.8:8082/api',
   withCredentials: true,
 });
 
