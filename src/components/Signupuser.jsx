@@ -1,560 +1,33 @@
-
-// import { useState, useEffect, useRef } from "react";
-
-// import { authClient, dashboardClient } from "../services/apiClient";
-// import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import { FaUser, FaLock, FaSyncAlt } from "react-icons/fa";
-
-
-// export default function SignupUser() {
-
-//   /**
-//    * @typedef {Object} Designation
-//    * @property {string} desig_cd
-//    * @property {string} designation
-//    */
-
-//   const [designation, setDesignations] = useState([]);
-//   const navigate = useNavigate();
-//   const [captcha, setCaptcha] = useState("");
-//   const [userCaptcha, setUserCaptcha] = useState("");
-//   const [captchaError, setCaptchaError] = useState("");
-//    const canvasRef = useRef(null);
-//    const [captchaInput, setCaptchaInput] = useState("");
-
-
-//   const [formData, setFormData] = useState({
-//     hrms_code: "",
-//     usr_ID: "",
-//     full_name: "",
-//     gender: "",
-//     email: "",
-//     phone_no: "",
-//     //  usr_level_cd: "",
-//     desig_cd: "",
-//     gpf_no: "",
-//     dt_of_join: "",
-//     dt_of_birth: "",
-//     pan_no: "",
-
-//     passwd: "",
-//     repasswd: "",
-//     hint_qs_cd: "",
-//     hint_ans: "",
-//   });
-
-//   useEffect(() => {
-
-
-//     fetchDesig();
-//     generateCaptcha(); // generate captcha initially
-//   }, []);
-
-//   const fetchDesig = async () => {
-//     try {
-
-//       const response2 = await dashboardClient.get("/auth/designation_details");
-
-//       setDesignations(response2.data.data);
-//       console.log("Designation Data:", response2.data.data);
-//     } catch (err) {
-//       console.error("Error fetching desig:", err.message);
-//     }
-//   };
-
-
-//   const handleChange = (field, value) => {
-//     setFormData((prev) => ({
-//       ...prev,
-//       [field]: value
-//     }));
-//   };
-
-//   const showDatePicker = () => {
-//     const input = document.getElementsByName("dt_of_join")[0];
-//     input.type = "date";
-//     input.max = new Date().toISOString().split("T")[0];
-//   };
-
-//   const showBirthDatePicker = () => {
-//     const input = document.getElementsByName("dt_of_birth")[0];
-//     input.type = "date";
-//     input.max = new Date().toISOString().split("T")[0];
-//   };
-//   // const generateCaptcha = () => {
-//   //   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-//   //   let result = "";
-//   //   for (let i = 0; i < 5; i++) {
-//   //     result += characters.charAt(Math.floor(Math.random() * characters.length));
-//   //   }
-//   //   setCaptcha(result);
-//   // };
-//   const generateCaptcha = () => {
-//     const newCaptcha = Math.random().toString(36).substring(2, 8).toUpperCase();
-//     setCaptcha(newCaptcha);
-//    // setCaptcha(result);
-
-//     const canvas = canvasRef.current;
-//     const ctx = canvas.getContext("2d");
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     ctx.font = "bold 26px 'Roboto'";
-//     ctx.fillStyle = "#333";
-//     ctx.fillText(newCaptcha, 20, 30);
-
-//     // Add random noise lines
-//     for (let i = 0; i < 3; i++) {
-//       ctx.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`;
-//       ctx.beginPath();
-//       ctx.moveTo(Math.random() * 150, Math.random() * 40);
-//       ctx.lineTo(Math.random() * 150, Math.random() * 40);
-//       ctx.stroke();
-//     }
-//   };
-
-//   const handleSubmit = async e => {
-
-//     e.preventDefault();
-//    // if (userCaptcha !== captcha) {
-//    //alert(canvasRef.value);
-//    //alert("yyy"+captcha)
-//    if(captchaInput!=captcha){
-//       setCaptchaError("CAPTCHA does not match");
-//       generateCaptcha(); // refresh captcha
-//       // setUserCaptcha("");
-//       setCaptchaInput("");
-//       return;
-//     } else {
-//       setCaptchaError("");
-//     }
-//     console.log(formData);
-
-
-//     //     if(formData.hrms_code=="" || formData.hrms_code.length==0){
-//     alert("in submit");
-
-//     //     }
-
-//     try {
-//       const response = await axios.post(
-//         "http://10.153.36.161:8082/api/auth/signup", formData,
-//         {
-//           headers: { "Content-Type": "application/json" },
-//         }
-//       );
-
-//       if (response.status === 201) {
-
-//         alert("Signup Successful");
-//         console.log(response.data.data);
-//         navigate("/");
-
-//       }
-//     } catch (error) {
-//       console.error(error);
-
-//     }
-//   };
-
-//   return (
-//     <>
-
-//       <div className="signup-container" style={{
-//         // height: "100vh",
-//         backgroundImage: `url("/images/ctd2.png")`,
-//         backgroundSize: "cover",
-//         backgroundPosition: "relative",
-//         backgroundRepeat: "no-repeat", padding: "0px"
-//       }} >
-//         <br /><br />
-//         <form onSubmit={handleSubmit}>
-//           <div className="card signup-card animate__fadeIn" style={{ margin: "auto", width: "60%", borderStyle: "none" }}>
-//             <br />
-//             <h3 className="text-center mb-4 signup-title" >Sign Up for New User</h3>
-//             <span style={{ margin: "auto" }}><img src="/images/bangla.png" style={{ width: "150px", height: "150px" }} /></span>
-//             <div className="row" style={{ margin: "auto", padding: "50px" }}>
-
-//               {/* HRMS Code */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">HRMS Code</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="text" maxLength={10}
-//                   className="form-control"
-//                   value={formData.hrms_code}
-//                   onChange={(e) => handleChange("hrms_code", e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-//               {/* User ID */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">User ID</label><span style={{ color: "red" }}>*</span>
-//                 <input style={{}}
-//                   type="text" readOnly
-//                   className="form-control"
-//                   value={formData.hrms_code}
-//                   onChange={(e) => handleChange("hrms_code", e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-//               {/* Full Name */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Full Name</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="text"
-//                   className="form-control"
-//                   value={formData.full_name}
-//                   onChange={(e) => handleChange("full_name", e.target.value)}
-//                   required
-//                 />
-//               </div>
-//               {/* Gender */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Gender</label><span style={{ color: "red" }}>*</span>
-//                 <select
-//                   className="form-select"
-//                   value={formData.gender}
-//                   onChange={(e) => handleChange("gender", e.target.value)}
-//                   required
-//                 >
-//                   <option value="">Select Gender</option>
-//                   <option value="M">Male</option>
-//                   <option value="F">Female</option>
-//                   <option value="O">Others</option>
-//                 </select>
-//               </div>
-
-//               {/* Email */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Email</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="email"
-//                   className="form-control"
-//                   value={formData.email}
-//                   onChange={(e) => handleChange("email", e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-//               {/* Phone */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Phone Number</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="text" maxLength={10}
-//                   className="form-control"
-//                   value={formData.phone_no}
-//                   onChange={(e) => handleChange("phone_no", e.target.value)}
-//                   required
-//                   pattern="\d{10}"
-//                   title="Phone number must be exactly 10 digits"
-//                 />
-//               </div>
-
-//               {/* User Level */}
-//               {/* <div className="col-md-6 mb-3">
-//           <label className="form-label">User Level</label>
-//           <select
-//             className="form-select"
-//             value={formData.usr_level_cd}
-//             onChange={(e) => handleChange("usr_level_cd", e.target.value)}
-//             required
-//           >
-//             <option value="">Select User Level</option>
-//             <option value="R1">Super Admin</option>
-//             <option value="R2">Circle Approver</option>
-//             <option value="R3">Charge Approver</option>
-//             <option value="R4">Office Approver</option>
-//             <option value="R5">User</option>
-//           </select>
-//         </div> */}
-
-//               {/* Designation */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Designation</label><span style={{ color: "red" }}>*</span>
-//                 <select
-//                   className="form-select"
-//                   value={formData.desig_cd}
-//                   onChange={(e) => handleChange("desig_cd", e.target.value)}
-//                   required
-//                 >
-//                   <option value="">Select Designation</option>
-
-//                   {designation.map((d) => (
-//                     <option key={d.desig_cd} value={d.desig_cd}>
-//                       {d.designation}
-//                     </option>
-//                   ))}
-//                 </select>
-//               </div>
-
-//               {/* BO ID */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">BO ID</label>
-//                 <input
-//                   type="text"
-//                   className="form-control"
-//                   value={formData.bo_id}
-//                   onChange={(e) => handleChange("bo_id", e.target.value)}
-//                 />
-//               </div>
-
-
-//               {/* GPF */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">GPF Number</label>
-//                 <input
-//                   type="text"
-//                   className="form-control"
-//                   value={formData.gpf_no}
-//                   onChange={(e) => handleChange("gpf_no", e.target.value)}
-//                 />
-//               </div>
-//               {/* PAN */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">PAN Number</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="text" maxLength={10}
-//                   className="form-control"
-//                   value={formData.pan_no}
-//                   onChange={(e) => handleChange("pan_no", e.target.value.toUpperCase())}
-//                   required
-//                   pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
-//                   title="Enter valid PAN (e.g., ABCDE1234F)"
-//                 />
-//               </div>
-
-//               {/* Date of Joining */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Date of Joining</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   name="dt_of_join"
-//                   type="text"
-//                   className="form-control"
-//                   placeholder="Select Date of Joining"
-//                   value={formData.dt_of_join}
-//                   onFocus={showDatePicker}   // 👈 CALLING HERE
-//                   onChange={(e) => handleChange("dt_of_join", e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-//               {/* Date of Joining */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Date of Birth</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   name="dt_of_birth"
-//                   type="text"
-//                   className="form-control"
-//                   placeholder="Select Date of Birth"
-//                   value={formData.dt_of_birth}
-//                   onFocus={showBirthDatePicker}   // 👈 call function
-//                   onChange={(e) => handleChange("dt_of_birth", e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-
-
-
-//               {/* Password */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Password</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="password"
-//                   className="form-control"
-//                   value={formData.passwd}
-//                   onChange={(e) => handleChange("passwd", e.target.value)}
-//                   required
-//                   pattern="^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$"
-//                   title="Password must be at least 8 characters, include 1 uppercase letter and 1 special character"
-//                 />
-//               </div>
-
-//               {/* RePassword */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Confirm Password</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="password"
-//                   className="form-control"
-//                   value={formData.repasswd}
-//                   onChange={(e) => handleChange("repasswd", e.target.value)}
-//                   required
-//                 />
-//                 {/* Error message */}
-//                 {formData.repasswd &&
-//                   formData.passwd !== formData.repasswd && (
-//                     <small style={{ color: "red" }}>Passwords do not match</small>
-//                   )}
-//               </div>
-
-
-//               {/* Hint Question */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Hint Question</label><span style={{ color: "red" }}>*</span>
-//                 <select
-//                   className="form-select"
-//                   value={formData.hint_qs_cd}
-//                   onChange={(e) => handleChange("hint_qs_cd", e.target.value)}
-//                   required
-//                 >
-//                   <option value="">Select Question</option>
-//                   <option value="Q1">What is your favorite food?</option>
-//                   <option value="Q2">What is your birth city?</option>
-//                   <option value="Q3">What is your first school name?</option>
-//                   <option value="Q4">What is your pet name?</option>
-//                 </select>
-//               </div>
-
-//               {/* Hint Answer */}
-//               <div className="col-md-6 mb-3">
-//                 <label className="form-label">Hint Answer</label><span style={{ color: "red" }}>*</span>
-//                 <input
-//                   type="text"
-//                   className="form-control"
-
-//                   value={formData.hint_ans}
-//                   onChange={(e) => handleChange("hint_ans", e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-//             </div>
-
-//             {/* Captcha */}
-//             {/* <div style={{ margin: "auto", backgroundColor: "lightgrey", width: "50%", borderRadius: "8px", padding: "10px" }}>
-//               <div className="col-md-6 mb-3" style={{ margin: "auto" }}>
-//                 <label className="form-label fw-bold">
-//                   Enter CAPTCHA <span className="text-danger">*</span>
-//                 </label>
-
-//                 <div className="d-flex align-items-center gap-2 mb-2">
-//                   <span
-//                     className="px-3 py-2 rounded fw-bold"
-//                     style={{
-//                       backgroundColor: "#f0f0f0",
-//                       fontSize: "18px",
-//                       letterSpacing: "3px",
-//                       border: "1px solid #ccc",
-//                       display: "inline-block"
-//                     }}
-//                   >
-//                     {captcha}
-//                   </span>
-
-//                   <button
-//                     type="button"
-//                     className="btn btn-outline-secondary btn-sm"
-//                     style={{ padding: "6px 10px" }}
-//                     onClick={generateCaptcha}
-//                   >
-//                     ↻
-//                   </button>
-
-
-//                   <input
-//                     type="text"
-//                     className="form-control"
-//                     style={{ width: "160px", height: "70px" }}
-//                     placeholder="Type CAPTCHA here"
-//                     value={userCaptcha}
-//                     onChange={(e) => setUserCaptcha(e.target.value)}
-//                     required
-//                   />
-
-//                   {captchaError && (
-//                     <small className="text-danger">{captchaError}</small>
-//                   )}
-//                 </div>
-//               </div>
-//             </div> */}
-
-//             {/* **************Priyanka Pal********** */}
-
-//              {/* CAPTCHA */}
-//                       <div className="mb-3 text-center">
-//                         <div className="d-flex justify-content-center align-items-center">
-//                         <canvas
-//                           ref={canvasRef}
-//                           width="150"
-//                           height="40"
-//                           style={{
-//                             border: "1px solid #ccc",
-//                             borderRadius: "5px",
-//                             marginBottom: "8px",
-//                           }}
-//                         />
-//                          <button
-//                             type="button"
-//                             className="btn btn-outline-secondary btn-sm d-flex align-items-center"
-//                             onClick={generateCaptcha}
-//                             title="Refresh CAPTCHA"
-//                           >
-//                             <FaSyncAlt />
-//                           </button>
-//                         </div>
-//                         <div className="d-flex justify-content-center align-items-center">
-//                           <input
-//                             type="text"
-//                             className="form-control me-2"
-//                             placeholder="Enter CAPTCHA"
-//                             style={{ width: "23%" }}
-//                             value={captchaInput}
-//                             onChange={(e) => setCaptchaInput(e.target.value)}
-//                             required
-//                           />
-//                           {captchaError && (
-//                     <small className="text-danger">{captchaError}</small>
-//                   )}
-
-//                         </div>
-//                       </div>
-
-//             {/* Submit Button */}
-//             <button type="submit"
-
-//               className="btn btn-primary signup-btn mt-3"
-//               style={{ width: "200px", margin: "auto" }}
-//             >
-//               Sign Up
-//             </button> <br />
-
-//             <div style={{ margin: "auto" }}> Already a User ? <span style={{ color: "blue" }} onClick={() => navigate("/login")}><a href="#" style={{ textDecoration: "none" }}>Login</a></span></div>
-//             <br />
-//           </div>
-//         </form>
-//       </div>
-
-
-//     </>
-//   );
-// }
-
-
 import { useState, useEffect, useRef } from "react";
-
-import { authClient, dashboardClient } from "../services/apiClient";
 import { useNavigate } from "react-router-dom";
+import { dashboardClient } from "../services/apiClient";
 import axios from "axios";
-import { FaUser, FaLock, FaSyncAlt } from "react-icons/fa";
-
+import {
+  FaSyncAlt,
+  FaUser,
+  FaVenusMars,
+  FaEnvelope,
+  FaPhone,
+  FaBriefcase,
+  FaIdCard,
+  FaCalendarAlt,
+  FaLock,
+  FaQuestionCircle,
+  FaRegLightbulb,
+} from "react-icons/fa";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { parse, isValid } from "date-fns";
+import "../css/SignupStyle.css";
 
 export default function SignupUser() {
-
-  /**
-   * @typedef {Object} Designation
-   * @property {string} desig_cd
-   * @property {string} designation
-   */
-
   const [designation, setDesignations] = useState([]);
   const navigate = useNavigate();
   const [captcha, setCaptcha] = useState("");
-  const [userCaptcha, setUserCaptcha] = useState("");
   const [captchaError, setCaptchaError] = useState("");
-  const canvasRef = useRef(null);
   const [captchaInput, setCaptchaInput] = useState("");
-
+  const [errors, setErrors] = useState({});
+  const canvasRef = useRef(null);
 
   const [formData, setFormData] = useState({
     hrms_code: "",
@@ -563,13 +36,12 @@ export default function SignupUser() {
     gender: "",
     email: "",
     phone_no: "",
-    //  usr_level_cd: "",
     desig_cd: "",
+    bo_id: "",
     gpf_no: "",
     dt_of_join: "",
     dt_of_birth: "",
     pan_no: "",
-
     passwd: "",
     repasswd: "",
     hint_qs_cd: "",
@@ -577,30 +49,22 @@ export default function SignupUser() {
   });
 
   useEffect(() => {
-
-
     fetchDesig();
-    generateCaptcha(); // generate captcha initially
+    generateCaptcha();
   }, []);
 
   const fetchDesig = async () => {
     try {
-
-      const response2 = await dashboardClient.get("/auth/designation_details");
-
-      setDesignations(response2.data.data);
-      console.log("Designation Data:", response2.data.data);
+      const response = await dashboardClient.get("/auth/designation_details");
+      setDesignations(response.data.data);
     } catch (err) {
-      console.error("Error fetching desig:", err.message);
+      console.error("Error fetching designations:", err.message);
     }
   };
 
-
   const handleChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const showDatePicker = () => {
@@ -614,18 +78,10 @@ export default function SignupUser() {
     input.type = "date";
     input.max = new Date().toISOString().split("T")[0];
   };
-  // const generateCaptcha = () => {
-  //   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  //   let result = "";
-  //   for (let i = 0; i < 5; i++) {
-  //     result += characters.charAt(Math.floor(Math.random() * characters.length));
-  //   }
-  //   setCaptcha(result);
-  // };
+
   const generateCaptcha = () => {
     const newCaptcha = Math.random().toString(36).substring(2, 8).toUpperCase();
     setCaptcha(newCaptcha);
-    // setCaptcha(result);
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -634,9 +90,9 @@ export default function SignupUser() {
     ctx.fillStyle = "#333";
     ctx.fillText(newCaptcha, 20, 30);
 
-    // Add random noise lines
     for (let i = 0; i < 3; i++) {
-      ctx.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`;
+      ctx.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255
+        }, 0.6)`;
       ctx.beginPath();
       ctx.moveTo(Math.random() * 150, Math.random() * 40);
       ctx.lineTo(Math.random() * 150, Math.random() * 40);
@@ -644,431 +100,476 @@ export default function SignupUser() {
     }
   };
 
-  const handleSubmit = async e => {
+  const validateForm = () => {
+    const newErrors = {};
 
+    if (!formData.hrms_code) newErrors.hrms_code = "HRMS Code is required";
+    if (!formData.full_name) newErrors.full_name = "Full Name is required";
+    if (!formData.gender) newErrors.gender = "Select a gender";
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.phone_no.match(/^\d{10}$/))
+      newErrors.phone_no = "Phone must be 10 digits";
+    if (!formData.desig_cd) newErrors.desig_cd = "Select a designation";
+    if (!formData.pan_no.match(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
+      newErrors.pan_no = "Invalid PAN format";
+    if (!formData.dt_of_join) newErrors.dt_of_join = "Joining date required";
+    if (!formData.dt_of_birth) newErrors.dt_of_birth = "Birth date required";
+    if (
+      !formData.passwd.match(/^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/)
+    )
+      newErrors.passwd =
+        "Password must have 8+ chars, 1 uppercase & 1 special symbol";
+    if (formData.passwd !== formData.repasswd)
+      newErrors.repasswd = "Passwords do not match";
+    if (!formData.hint_qs_cd) newErrors.hint_qs_cd = "Select a hint question";
+    if (!formData.hint_ans) newErrors.hint_ans = "Hint Answer required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (userCaptcha !== captcha) {
-    //alert(canvasRef.value);
-    //alert("yyy"+captcha)
-    if (captchaInput != captcha) {
+
+    if (!validateForm()) return;
+
+    if (captchaInput !== captcha) {
       setCaptchaError("CAPTCHA does not match");
-      generateCaptcha(); // refresh captcha
-      // setUserCaptcha("");
+      generateCaptcha();
       setCaptchaInput("");
       return;
     } else {
       setCaptchaError("");
     }
-    console.log(formData);
-
-
-    //     if(formData.hrms_code=="" || formData.hrms_code.length==0){
-    alert("in submit");
-
-    //     }
 
     try {
       const response = await axios.post(
-        "http://10.153.36.161:8082/api/auth/signup", formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        "http://10.153.36.161:8082/api/auth/signup",
+        formData,
+        { headers: { "Content-Type": "application/json" } }
       );
 
       if (response.status === 201) {
-
         alert("Signup Successful");
-        console.log(response.data.data);
         navigate("/");
-
       }
     } catch (error) {
       console.error(error);
-
+      alert("Signup failed. Please check your details.");
     }
   };
 
   return (
-    <>
-
-      <div className="signup-container" style={{
-        // height: "100vh",
+    <div
+      className="signup-container d-flex align-items-center justify-content-center fade-in"
+      style={{
+        minHeight: "100vh",
         backgroundImage: `url("/images/ctd2.png")`,
         backgroundSize: "cover",
-        backgroundPosition: "relative",
-        backgroundRepeat: "no-repeat", padding: "0px"
-      }} >
-        <br /><br />
+        backgroundPosition: "center",
+      }}
+    >
+      <div
+        className="card shadow-lg p-4"
+        style={{
+          maxWidth: "900px",
+          width: "95%",
+          borderRadius: "15px",
+          backgroundColor: "rgba(255,255,255,0.95)",
+        }}
+      >
+        <div className="text-center">
+          <img
+            src="/images/bangla.png"
+            alt="Logo"
+            style={{ width: "100px", height: "100px" }}
+            className="mb-3"
+          />
+          <h3 className="fw-bold mb-4">Sign Up for New User</h3>
+        </div>
+
         <form onSubmit={handleSubmit}>
-          <div className="card signup-card animate__fadeIn" style={{ margin: "auto", width: "60%", borderStyle: "none" }}>
-            <br />
-            <h3 className="text-center mb-4 signup-title" >Sign Up for New User</h3>
-            <span style={{ margin: "auto" }}><img src="/images/bangla.png" style={{ width: "150px", height: "150px" }} /></span>
-            <div className="row" style={{ margin: "auto", padding: "50px" }}>
-
-              {/* HRMS Code */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">HRMS Code</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="text" maxLength={10}
-                  className="form-control"
-                  value={formData.hrms_code}
-                  // onChange={(e) => handleChange("hrms_code", e.target.value)}
-                  onChange={(e) => {
-                    const value = e.target.value;
-
-                    // Allow only numeric input (0–9)
-                    if (/^\d*$/.test(value)) {
-                      handleChange("hrms_code", value);
-                    }
-                  }}
-                  required
-                />
-              </div>
-
-              {/* User ID */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">User ID</label><span style={{ color: "red" }}>*</span>
-                <input style={{}}
-                  type="text" readOnly
-                  className="form-control"
-                  value={formData.hrms_code}
-                  maxLength={10}
-                  onChange={(e) => handleChange("hrms_code", e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Full Name */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Full Name</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={formData.full_name}
-                  onChange={(e) => handleChange("full_name", e.target.value)}
-                  required
-                />
-              </div>
-              {/* Gender */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Gender</label><span style={{ color: "red" }}>*</span>
-                <select
-                  className="form-select"
-                  value={formData.gender}
-                  onChange={(e) => handleChange("gender", e.target.value)}
-                  required
-                >
-                  <option value="">Select Gender</option>
-                  <option value="M">Male</option>
-                  <option value="F">Female</option>
-                  <option value="O">Others</option>
-                </select>
-              </div>
-
-              {/* Email */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Email</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={formData.email}
-                  onChange={(e) => handleChange("email", e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Phone */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Phone Number</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="text" maxLength={10}
-                  className="form-control"
-                  value={formData.phone_no}
-                  onChange={(e) => handleChange("phone_no", e.target.value)}
-                  required
-                  pattern="\d{10}"
-                  title="Phone number must be exactly 10 digits"
-                />
-              </div>
-
-              {/* User Level */}
-              {/* <div className="col-md-6 mb-3">
-          <label className="form-label">User Level</label>
-          <select
-            className="form-select"
-            value={formData.usr_level_cd}
-            onChange={(e) => handleChange("usr_level_cd", e.target.value)}
-            required
-          >
-            <option value="">Select User Level</option>
-            <option value="R1">Super Admin</option>
-            <option value="R2">Circle Approver</option>
-            <option value="R3">Charge Approver</option>
-            <option value="R4">Office Approver</option>
-            <option value="R5">User</option>
-          </select>
-        </div> */}
-
-              {/* Designation */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Designation</label><span style={{ color: "red" }}>*</span>
-                <select
-                  className="form-select"
-                  value={formData.desig_cd}
-                  onChange={(e) => handleChange("desig_cd", e.target.value)}
-                  required
-                >
-                  <option value="">Select Designation</option>
-
-                  {designation.map((d) => (
-                    <option key={d.desig_cd} value={d.desig_cd}>
-                      {d.designation}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* BO ID */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">BO ID</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={formData.bo_id}
-                  onChange={(e) => handleChange("bo_id", e.target.value)}
-                />
-              </div>
-
-
-              {/* GPF */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">GPF Number</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={formData.gpf_no}
-                  onChange={(e) => handleChange("gpf_no", e.target.value)}
-                />
-              </div>
-              {/* PAN */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">PAN Number</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="text" maxLength={10}
-                  className="form-control"
-                  value={formData.pan_no}
-                  onChange={(e) => handleChange("pan_no", e.target.value.toUpperCase())}
-                  required
-                  pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
-                  title="Enter valid PAN (e.g., ABCDE1234F)"
-                />
-              </div>
-
-              {/* Date of Joining */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Date of Joining</label><span style={{ color: "red" }}>*</span>
-                <input
-                  name="dt_of_join"
-                  type="text"
-                  className="form-control"
-                  placeholder="Select Date of Joining"
-                  value={formData.dt_of_join}
-                  onFocus={showDatePicker}   // 👈 CALLING HERE
-                  onChange={(e) => handleChange("dt_of_join", e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Date of Joining */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Date of Birth</label><span style={{ color: "red" }}>*</span>
-                <input
-                  name="dt_of_birth"
-                  type="text"
-                  className="form-control"
-                  placeholder="Select Date of Birth"
-                  value={formData.dt_of_birth}
-                  onFocus={showBirthDatePicker}   // 👈 call function
-                  onChange={(e) => handleChange("dt_of_birth", e.target.value)}
-                  required
-                />
-              </div>
-
-
-
-
-              {/* Password */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Password</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={formData.passwd}
-                  onChange={(e) => handleChange("passwd", e.target.value)}
-                  required
-                  pattern="^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$"
-                  title="Password must be at least 8 characters, include 1 uppercase letter and 1 special character"
-                />
-              </div>
-
-              {/* RePassword */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Confirm Password</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={formData.repasswd}
-                  onChange={(e) => handleChange("repasswd", e.target.value)}
-                  required
-                />
-                {/* Error message */}
-                {formData.repasswd &&
-                  formData.passwd !== formData.repasswd && (
-                    <small style={{ color: "red" }}>Passwords do not match</small>
-                  )}
-              </div>
-
-
-              {/* Hint Question */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Hint Question</label><span style={{ color: "red" }}>*</span>
-                <select
-                  className="form-select"
-                  value={formData.hint_qs_cd}
-                  onChange={(e) => handleChange("hint_qs_cd", e.target.value)}
-                  required
-                >
-                  <option value="">Select Question</option>
-                  <option value="Q1">What is your favorite food?</option>
-                  <option value="Q2">What is your birth city?</option>
-                  <option value="Q3">What is your first school name?</option>
-                  <option value="Q4">What is your pet name?</option>
-                  <option value="Q5">What is your nickname?</option>
-                </select>
-              </div>
-
-              {/* Hint Answer */}
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Hint Answer</label><span style={{ color: "red" }}>*</span>
-                <input
-                  type="text"
-                  className="form-control"
-
-                  value={formData.hint_ans}
-                  onChange={(e) => handleChange("hint_ans", e.target.value)}
-                  required
-                />
-              </div>
-
+          <div className="row g-3">
+            {/* HRMS Code */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaIdCard className="me-2 text-primary" />
+                HRMS Code<span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                maxLength={10}
+                value={formData.hrms_code}
+                onChange={(e) =>
+                  /^\d*$/.test(e.target.value) &&
+                  handleChange("hrms_code", e.target.value)
+                }
+              />
+              {errors.hrms_code && (
+                <small className="text-danger">{errors.hrms_code}</small>
+              )}
             </div>
 
-            {/* Captcha */}
-            {/* <div style={{ margin: "auto", backgroundColor: "lightgrey", width: "50%", borderRadius: "8px", padding: "10px" }}>
-              <div className="col-md-6 mb-3" style={{ margin: "auto" }}>
-                <label className="form-label fw-bold">
-                  Enter CAPTCHA <span className="text-danger">*</span>
-                </label>
-
-                <div className="d-flex align-items-center gap-2 mb-2">
-                  <span
-                    className="px-3 py-2 rounded fw-bold"
-                    style={{
-                      backgroundColor: "#f0f0f0",
-                      fontSize: "18px",
-                      letterSpacing: "3px",
-                      border: "1px solid #ccc",
-                      display: "inline-block"
-                    }}
-                  >
-                    {captcha}
-                  </span>
-
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-sm"
-                    style={{ padding: "6px 10px" }}
-                    onClick={generateCaptcha}
-                  >
-                    ↻
-                  </button>
-
-
-                  <input
-                    type="text"
-                    className="form-control"
-                    style={{ width: "160px", height: "70px" }}
-                    placeholder="Type CAPTCHA here"
-                    value={userCaptcha}
-                    onChange={(e) => setUserCaptcha(e.target.value)}
-                    required
-                  />
-
-                  {captchaError && (
-                    <small className="text-danger">{captchaError}</small>
-                  )}
-                </div>
-              </div>
-            </div> */}
-
-            {/* **************Priyanka Pal********** */}
-
-            {/* CAPTCHA */}
-            <div className="mb-3 text-center">
-              <div className="d-flex justify-content-center align-items-center">
-                <canvas
-                  ref={canvasRef}
-                  width="150"
-                  height="40"
-                  style={{
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    marginBottom: "8px",
-                  }}
-                />
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary btn-sm d-flex align-items-center"
-                  onClick={generateCaptcha}
-                  title="Refresh CAPTCHA"
-                >
-                  <FaSyncAlt />
-                </button>
-              </div>
-              <div className="d-flex justify-content-center align-items-center">
-                <input
-                  type="text"
-                  className="form-control me-2"
-                  placeholder="Enter CAPTCHA"
-                  style={{ width: "23%" }}
-                  value={captchaInput}
-                  onChange={(e) => setCaptchaInput(e.target.value)}
-                  required
-                />
-                {captchaError && (
-                  <small className="text-danger">{captchaError}</small>
-                )}
-
-              </div>
+            {/* User ID */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaUser className="me-2 text-primary" /> User ID
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                value={formData.hrms_code}
+                readOnly
+              />
             </div>
 
-            {/* Submit Button */}
-            <button type="submit"
+            {/* Full Name */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaUser className="me-2 text-primary" /> Full Name
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                value={formData.full_name}
+                onChange={(e) => handleChange("full_name", e.target.value)}
+              />
+              {errors.full_name && (
+                <small className="text-danger">{errors.full_name}</small>
+              )}
+            </div>
 
-              className="btn btn-primary signup-btn mt-3"
-              style={{ width: "200px", margin: "auto" }}
+            {/* Gender */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaVenusMars className="me-2 text-primary" /> Gender
+                <span className="text-danger">*</span>
+              </label>
+              <select
+                className="form-select glow-input"
+                value={formData.gender}
+                onChange={(e) => handleChange("gender", e.target.value)}
+              >
+                <option value="">Select Gender</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Others</option>
+              </select>
+              {errors.gender && (
+                <small className="text-danger">{errors.gender}</small>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaEnvelope className="me-2 text-primary" /> Email
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="email"
+                className="form-control glow-input"
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
+              {errors.email && (
+                <small className="text-danger">{errors.email}</small>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaPhone className="me-2 text-primary" /> Phone Number
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                maxLength={10}
+                value={formData.phone_no}
+                onChange={(e) => handleChange("phone_no", e.target.value)}
+              />
+              {errors.phone_no && (
+                <small className="text-danger">{errors.phone_no}</small>
+              )}
+            </div>
+
+            {/* Designation */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaBriefcase className="me-2 text-primary" /> Designation
+                <span className="text-danger">*</span>
+              </label>
+              <select
+                className="form-select glow-input"
+                value={formData.desig_cd}
+                onChange={(e) => handleChange("desig_cd", e.target.value)}
+              >
+                <option value="">Select Designation</option>
+                {designation.map((d) => (
+                  <option key={d.desig_cd} value={d.desig_cd}>
+                    {d.designation}
+                  </option>
+                ))}
+              </select>
+              {errors.desig_cd && (
+                <small className="text-danger">{errors.desig_cd}</small>
+              )}
+            </div>
+            {/* PAN */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaIdCard className="me-2 text-primary" /> PAN Number
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                maxLength={10}
+                value={formData.pan_no}
+                onChange={(e) =>
+                  handleChange("pan_no", e.target.value.toUpperCase())
+                }
+              />
+              {errors.pan_no && (
+                <small className="text-danger">{errors.pan_no}</small>
+              )}
+            </div>
+
+            {/* BO ID */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaIdCard className="me-2 text-primary" /> BO ID
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                value={formData.bo_id}
+                onChange={(e) => handleChange("bo_id", e.target.value)}
+              />
+            </div>
+
+            {/* GPF */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaIdCard className="me-2 text-primary" /> GPF Number
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                value={formData.gpf_no}
+                onChange={(e) => handleChange("gpf_no", e.target.value)}
+              />
+            </div>
+
+            {/* Date of Birth */}
+<div className="col-md-6 position-relative">
+  <label className="form-label">
+    <FaCalendarAlt className="me-2 text-primary" /> Date of Birth
+    <span className="text-danger">*</span>
+  </label>
+  <DatePicker
+    selected={formData.dt_of_birth ? new Date(formData.dt_of_birth) : null}
+    onChange={(date) => {
+      if (date && isValid(date)) {
+        handleChange("dt_of_birth", date.toISOString().split("T")[0]);
+      }
+    }}
+    onChangeRaw={(e) => {
+      const entered = e.target.value;
+      const parsed = parse(entered, "yyyy-MM-dd", new Date());
+      if (isValid(parsed)) {
+        handleChange("dt_of_birth", parsed.toISOString().split("T")[0]);
+      }
+    }}
+    dateFormat="yyyy-MM-dd"
+    placeholderText="Select Date of Birth"
+    className="form-control glow-input custom-datepicker"
+    maxDate={new Date()}
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    todayButton="Today"
+    autoComplete="off"
+    shouldCloseOnSelect={true}
+  />
+  <FaCalendarAlt className="calendar-icon" />
+  {errors.dt_of_birth && (
+    <small className="text-danger">{errors.dt_of_birth}</small>
+  )}
+</div>
+
+{/* Date of Joining */}
+<div className="col-md-6 position-relative">
+  <label className="form-label">
+    <FaCalendarAlt className="me-2 text-primary" /> Date of Joining
+    <span className="text-danger">*</span>
+  </label>
+  <DatePicker
+    selected={formData.dt_of_join ? new Date(formData.dt_of_join) : null}
+    onChange={(date) => {
+      if (date && isValid(date)) {
+        handleChange("dt_of_join", date.toISOString().split("T")[0]);
+      }
+    }}
+    onChangeRaw={(e) => {
+      const entered = e.target.value;
+      const parsed = parse(entered, "yyyy-MM-dd", new Date());
+      if (isValid(parsed)) {
+        handleChange("dt_of_join", parsed.toISOString().split("T")[0]);
+      }
+    }}
+    dateFormat="yyyy-MM-dd"
+    placeholderText="Select Date of Joining"
+    className="form-control glow-input custom-datepicker"
+    maxDate={new Date()}
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    todayButton="Today"
+    autoComplete="off"
+    shouldCloseOnSelect={true}
+  />
+  <FaCalendarAlt className="calendar-icon" />
+  {errors.dt_of_join && (
+    <small className="text-danger">{errors.dt_of_join}</small>
+  )}
+</div>
+
+            {/* Password */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaLock className="me-2 text-primary" /> Password
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="password"
+                className="form-control glow-input"
+                value={formData.passwd}
+                onChange={(e) => handleChange("passwd", e.target.value)}
+              />
+              {errors.passwd && (
+                <small className="text-danger">{errors.passwd}</small>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaLock className="me-2 text-primary" /> Confirm Password
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="password"
+                className="form-control glow-input"
+                value={formData.repasswd}
+                onChange={(e) => handleChange("repasswd", e.target.value)}
+              />
+              {errors.repasswd && (
+                <small className="text-danger">{errors.repasswd}</small>
+              )}
+            </div>
+
+            {/* Hint */}
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaQuestionCircle className="me-2 text-primary" /> Hint Question
+                <span className="text-danger">*</span>
+              </label>
+              <select
+                className="form-select glow-input"
+                value={formData.hint_qs_cd}
+                onChange={(e) => handleChange("hint_qs_cd", e.target.value)}
+              >
+                <option value="">Select Question</option>
+                <option value="Q1">What is your favorite food?</option>
+                <option value="Q2">What is your birth city?</option>
+                <option value="Q3">What is your first school name?</option>
+                <option value="Q4">What is your pet name?</option>
+                <option value="Q5">What is your nickname?</option>
+              </select>
+              {errors.hint_qs_cd && (
+                <small className="text-danger">{errors.hint_qs_cd}</small>
+              )}
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label">
+                <FaRegLightbulb className="me-2 text-primary" /> Hint Answer
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control glow-input"
+                value={formData.hint_ans}
+                onChange={(e) => handleChange("hint_ans", e.target.value)}
+              />
+              {errors.hint_ans && (
+                <small className="text-danger">{errors.hint_ans}</small>
+              )}
+            </div>
+          </div>
+
+          {/* CAPTCHA */}
+          <div className="text-center mt-4">
+            <div className="d-flex justify-content-center align-items-center mb-2">
+              <canvas
+                ref={canvasRef}
+                width="150"
+                height="40"
+                style={{
+                  border: "1px solid #ccc",
+                  borderRadius: "5px",
+                  marginRight: "10px",
+                }}
+              />
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm"
+                onClick={generateCaptcha}
+                title="Refresh CAPTCHA"
+              >
+                <FaSyncAlt />
+              </button>
+            </div>
+            <input
+              type="text"
+              className="form-control mx-auto glow-input"
+              placeholder="Enter CAPTCHA"
+              style={{ width: "200px" }}
+              value={captchaInput}
+              onChange={(e) => setCaptchaInput(e.target.value)}
+              required
+            />
+            {captchaError && <small className="text-danger">{captchaError}</small>}
+          </div>
+
+          {/* Submit */}
+          <div className="text-center mt-4">
+            <button
+              type="submit"
+              className="btn btn-primary px-5 py-2 fw-semibold glow-btn"
             >
+              <FaUser className="me-2" />
               Sign Up
-            </button> <br />
-
-            <div style={{ margin: "auto" }}> Already a User ? <span style={{ color: "blue" }} onClick={() => navigate("/login")}><a href="#" style={{ textDecoration: "none" }}>Login</a></span></div>
-            <br />
+            </button>
+            <p className="mt-3">
+              Already a user?{" "}
+              <span
+                className="text-primary fw-bold"
+                role="button"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </span>
+            </p>
           </div>
         </form>
       </div>
-
-
-    </>
+    </div>
   );
 }
-
