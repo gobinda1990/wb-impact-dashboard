@@ -30,8 +30,7 @@ pipeline {
                 SONAR_AUTH_TOKEN = credentials('sonar-token')
             }
             steps {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    dir('frontend') {
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {                   
                         sh """
                         sonar-scanner \
                           -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
@@ -40,8 +39,7 @@ pipeline {
                           -Dsonar.exclusions=node_modules/**,dist/** \
                           -Dsonar.host.url=${SONAR_HOST_URL} \
                           -Dsonar.login=${SONAR_AUTH_TOKEN}
-                        """
-                    }
+                        """                 
                 }
             }
         }
