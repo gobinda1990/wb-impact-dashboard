@@ -20,24 +20,28 @@ pipeline {
             }
         }
 
-        stage('SonarQube Scan - Frontend') {
-            environment {
-                SONAR_AUTH_TOKEN = credentials('sonar-token')
-            }
-            steps {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {                   
-                        sh """
-                        sonar-scanner \
+        stage('SonarQube Analysis - React') {
+    steps {
+        echo "Running SonarQube analysis for React application..."
+        withSonarQubeEnv("${SONARQUBE_SERVER}") {
+            withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {              
+                    sh '''
+                        echo "SCANNER_HOME = $SCANNER_HOME"
+                        ls -l ${SCANNER_HOME}/bin/
+                        ${SCANNER_HOME}/bin/sonar-scanner \
                           -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                           -Dsonar.projectName="${SONAR_PROJECT_NAME}" \
                           -Dsonar.sources=src \
-                          -Dsonar.exclusions=node_modules/**,dist/** \
-                          -Dsonar.host.url=${SONAR_HOST_URL} \
-                          -Dsonar.login=${SONAR_AUTH_TOKEN}
-                        """                 
-                }
+                          -Dsonar.exclusions=node_modules/**,dist/**,build/** \
+                          -Dsonar.language=js \
+                          -Dsonar.sourceEncoding=UTF-8 \
+                          -Dsonar.host.url=$SONAR_HOST_URL \
+                          -Dsonar.login=$SONAR_TOKEN
+                    '''              
             }
         }
+    }
+}
 
         stage('Build Docker Image') {
             steps {
