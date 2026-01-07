@@ -1,297 +1,164 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import "../css/ForgotPassword.css";
 
 const ForgotPassword = () => {
-    const [hrmsCode, setHrmsCode] = useState("");
-    const [question, setQuestion] = useState("");
-    const [answer, setAnswer] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const navigate = useNavigate();
+  const [hrmsCode, setHrmsCode] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
 
-    const [errors, setErrors] = useState({});
-    const [message, setMessage] = useState("");
-    
+  const navigate = useNavigate();
 
-    // Refs for auto-focus
-    const hrmsRef = useRef(null);
-    const pwdRef = useRef(null);
-    const cpwdRef = useRef(null);
-    const qsRef = useRef(null);
-    const ansRef = useRef(null);
+  const hrmsRef = useRef(null);
+  const qsRef = useRef(null);
+  const ansRef = useRef(null);
+  const pwdRef = useRef(null);
+  const cpwdRef = useRef(null);
 
-    const validate = () => {
-        let newErrors = {};
+  const validate = () => {
+    const newErrors = {};
 
-        // HRMS Code Validation
-        if (!hrmsCode) {
-            alert("HRMS Code is required.");
-            hrmsRef.current.focus();
-        } else if (!/^[0-9]+$/.test(hrmsCode)) {
-            alert("HRMS Code must contain only numbers.");
-            hrmsRef.current.focus();
-        } else if (hrmsCode.length !== 10) {
-            alert("HRMS Code must be exactly 10 digits.");
-            hrmsRef.current.focus();
-        }
+    if (!hrmsCode) newErrors.hrmsCode = "HRMS Code is required.";
+    else if (!/^[0-9]{10}$/.test(hrmsCode))
+      newErrors.hrmsCode = "HRMS Code must be exactly 10 digits.";
 
-        // Security Question
-        if (!question) {
-            alert("Please select a security question.");
-        }
+    if (!question) newErrors.question = "Please select a security question.";
+    if (!answer) newErrors.answer = "Security answer is required.";
 
-        // Security Answer
-        // if (!answer) {
-        //     alert( "Security answer is required.");
-        //     ansRef.current.focus();
-        //      return false;
-        // }
+    if (!password) newErrors.password = "Password is required.";
+    else if (password.length < 8)
+      newErrors.password = "Password must be at least 8 characters.";
+    else if (!/[A-Z]/.test(password))
+      newErrors.password = "Must contain at least one uppercase letter.";
+    else if (!/[a-z]/.test(password))
+      newErrors.password = "Must contain at least one lowercase letter.";
+    else if (!/[0-9]/.test(password))
+      newErrors.password = "Must contain at least one number.";
+    else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password))
+      newErrors.password = "Must contain one special character.";
 
-        // Password Validation
-        if (!password) {
-            alert("Password is required.");
-            pwdRef.current.focus();
-            return false;
-        } else {
-            if (password.length < 8) {
-                alert("Password must be at least 8 characters.");
-                pwdRef.current.focus();
-                return false;
-            }
-            else if (!/[A-Z]/.test(password)) {
-                alert("Must contain at least one uppercase letter.");
-                pwdRef.current.focus();
-                return false;
-            }
-            else if (!/[a-z]/.test(password)) {
-                alert("Must contain at least one lowercase letter.");
-                pwdRef.current.focus();
-                return false;
-            }
-            else if (!/[0-9]/.test(password)) {
-                // alert( "Must contain at least one number.";
-                alert("Must contain at least one number.");
-                pwdRef.current.focus();
-                return false;
-            }
-            else if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password)) {
-                alert("Must contain one special character.");
-                pwdRef.current.focus();
-                return false;
-            }
+    if (!confirmPassword) newErrors.confirmPassword = "Confirm password required.";
+    else if (confirmPassword !== password)
+      newErrors.confirmPassword = "Passwords do not match.";
 
-            //  if (newErrors.password) pwdRef.current.focus();
-        }
+    setErrors(newErrors);
 
-        // Confirm Password Validation
-        if (!confirmPassword) {
-            alert("Confirm Password is required.");
-            cpwdRef.current.focus();
-            return false;
-        } else if (confirmPassword !== password) {
-            alert("Confirm Password do not match with Password.");
-            cpwdRef.current.focus();
-            return false;
-        }
+    if (Object.keys(newErrors).length > 0) {
+      if (newErrors.hrmsCode) hrmsRef.current.focus();
+      else if (newErrors.question) qsRef.current.focus();
+      else if (newErrors.answer) ansRef.current.focus();
+      else if (newErrors.password) pwdRef.current.focus();
+      else if (newErrors.confirmPassword) cpwdRef.current.focus();
+      return false;
+    }
 
-        // setErrors(newErrors);
+    return true;
+  };
 
-        //return Object.keys(newErrors).length === 0;
-        return true;
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      setMessage("✅ Password reset successfully!");
+      setHrmsCode("");
+      setQuestion("");
+      setAnswer("");
+      setPassword("");
+      setConfirmPassword("");
+      setErrors({});
+    }
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  return (
+    <div className="forgot-container">
+      <div className="forgot-card">
+        <h2>Forgot Password</h2>
+        {message && <div className="success-msg">{message}</div>}
 
-        if (validate()) {
-            alert("Password reset successfully!");
-             setMessage("✅Password reset successfully!");
-            // API call here
-            setHrmsCode("");
-            setQuestion("");
-            setAnswer("");
-            setPassword("");
-            setConfirmPassword("");
-        }
-    };
-
-    return (
-        // <div style={styles.container}>
-        <div
-            className="d-flex justify-content-center align-items-center bg-light"
-            style={{
-                height: "100vh",
-                backgroundImage: `url("/images/ctd2.png")`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
+        <form onSubmit={handleSubmit}>
+          <label className="forgot-label">HRMS Code</label>
+          <input
+            type="text"
+            value={hrmsCode}
+            ref={hrmsRef}
+            maxLength={10}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (/^[0-9]*$/.test(val)) setHrmsCode(val);
             }}
-        >
-            <div style={styles.card}>
-                {message && <h6>{message}</h6>}
-                <h3 style={{ textAlign: "center" }}>Forgot Password</h3>
- 
-                <form onSubmit={handleSubmit}>
+            className="forgot-input"
+            placeholder="Enter 10-digit HRMS Code"
+          />
+          {errors.hrmsCode && <div className="error-msg">{errors.hrmsCode}</div>}
 
-                    {/* HRMS CODE */}
-                    <label>HRMS Code</label>
-                    <input
-                        type="text"
-                        value={hrmsCode}
-                        ref={hrmsRef}
-                        maxLength="10"
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^[0-9]*$/.test(value)) setHrmsCode(value);
-                        }}
-                        style={styles.input}
-                        placeholder="Enter 10-digit HRMS Code"
-                        required
-                    />
-                    {errors.hrmsCode && <div style={styles.error}>{errors.hrmsCode}</div>}
+          <label className="forgot-label">Security Question</label>
+          <select
+            value={question}
+            ref={qsRef}
+            onChange={(e) => setQuestion(e.target.value)}
+            className="forgot-input"
+          >
+            <option value="">-- Select Question --</option>
+            <option value="Q1">What is your favorite food?</option>
+            <option value="Q2">What is your birth city?</option>
+            <option value="Q3">What is your first school name?</option>
+            <option value="Q4">What is your pet name?</option>
+            <option value="Q5">What is your nickname?</option>
+          </select>
+          {errors.question && <div className="error-msg">{errors.question}</div>}
 
-                    {/* SECURITY QUESTION */}
-                    <label>Security Question</label>
-                    <select
-                        style={styles.input}
-                        value={question}
-                        ref={qsRef}
-                        onChange={(e) => setQuestion(e.target.value)}
-                        required
-                    >
-                        <option value="">-- Select Question --</option>
-                        <option value="Q1">What is your favorite food?</option>
-                        <option value="Q2">What is your birth city?</option>
-                        <option value="Q3">What is your first school name?</option>
-                        <option value="Q4">What is your pet name?</option>
-                        <option value="Q5">What is your nickname?</option>
+          <label className="forgot-label">Security Answer</label>
+          <input
+            type="text"
+            value={answer}
+            ref={ansRef}
+            onChange={(e) => setAnswer(e.target.value)}
+            className="forgot-input"
+            placeholder="Enter answer"
+          />
+          {errors.answer && <div className="error-msg">{errors.answer}</div>}
 
-                    </select>
-                    {errors.question && <div style={styles.error}>{errors.question}</div>}
+          <label className="forgot-label">New Password</label>
+          <input
+            type="password"
+            value={password}
+            ref={pwdRef}
+            onChange={(e) => setPassword(e.target.value)}
+            className="forgot-input"
+            placeholder="Enter new password"
+          />
+          {errors.password && <div className="error-msg">{errors.password}</div>}
 
-                    {/* SECURITY ANSWER */}
-                    <label>Security Answer</label>
-                    <input
-                        type="text"
-                        value={answer}
-                        ref={ansRef}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        style={styles.input}
-                        placeholder="Enter answer"
-                        required
-                    />
-                    {errors.answer && <div style={styles.error}>{errors.answer}</div>}
+          <label className="forgot-label">Confirm Password</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            ref={cpwdRef}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="forgot-input"
+            placeholder="Confirm password"
+          />
+          {errors.confirmPassword && (
+            <div className="error-msg">{errors.confirmPassword}</div>
+          )}
 
-                    {/* PASSWORD */}
-                    <label>New Password</label>
-                    <input
-                        type="password"
-                        value={password}
-                        ref={pwdRef}
-                        onChange={(e) => setPassword(e.target.value)}
-                        style={styles.input}
-                        placeholder="Enter new password"
-                        required
-                    />
-                    {errors.password && <div style={styles.error}>{errors.password}</div>}
+          <button type="submit" className="forgot-btn">
+            Reset Password
+          </button>
 
-                    {/* CONFIRM PASSWORD */}
-                    <label>Confirm Password</label>
-                    <input
-                        type="password"
-                        value={confirmPassword}
-                        ref={cpwdRef}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        style={styles.input}
-                        placeholder="Confirm password"
-                        required
-                    />
-                    {errors.confirmPassword && (
-                        <div style={styles.error}>{errors.confirmPassword}</div>
-                    )}
-
-                    {/* SUBMIT */}
-                    <button type="submit" style={styles.btn}>Reset Password</button>
-                    <div style={styles.successWrapper}>
-                        {/* <span>Reset Password? </span> */}
-
-                        <span
-                            style={styles.loginLink}
-                            onClick={() => navigate("/login")}
-                        >
-                            Login
-                        </span>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    );
-};
-
-// Styles
-const styles = {
-    container: {
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f0f2f5",
-    },
-    card: {
-        width: "380px",
-        padding: "25px",
-        borderRadius: "10px",
-        background: "#fff",
-        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-    },
-    input: {
-        width: "100%",
-        padding: "10px",
-        marginBottom: "10px",
-        borderRadius: "6px",
-        border: "1px solid #ccc",
-    },
-    btn: {
-        width: "100%",
-        padding: "12px",
-        background: "#007bff",
-        color: "#fff",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer",
-        marginTop: "10px",
-        fontSize: "16px",
-    },
-    error: {
-        background: "#ffdddd",
-        padding: "8px",
-        borderRadius: "6px",
-        color: "#cc0000",
-        marginBottom: "8px",
-        fontSize: "14px",
-    },
-    input: {
-        width: "100%",
-        padding: "10px",
-        marginBottom: "10px",
-        borderRadius: "6px",
-        border: "1px solid #ccc",
-    },
-    successWrapper: {
-        marginTop: "15px",
-        textAlign: "center",
-        fontSize: "14px",
-        color: "#333",
-    },
-    loginLink: {
-        color: "#007bff",
-        marginLeft: "5px",
-        cursor: "pointer",
-        fontWeight: "bold",
-        textDecoration: "underline",
-    },
+          <div className="login-wrapper">
+            Remembered password?
+            <span className="login-link" onClick={() => navigate("/login")}>
+              Login
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default ForgotPassword;

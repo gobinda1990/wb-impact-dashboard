@@ -10,7 +10,6 @@ import Unauthorized from "./pages/Unauthorized.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import MyProfilePage from "./pages/MyProfilePage.jsx";
 import "./index.css";
-import './theme.scss';
 import Signup from './components/Signupuser.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
@@ -39,7 +38,7 @@ function App() {
         <Route
           path="/users"
           element={
-            <PrivateRoute roles={["Super Admin", "Circle Approver", "Charge Approver","Office Approver"]}>
+            <PrivateRoute roles={["Super Admin", "Admin"]}>
               <DashboardLayout>
                 <UsersPage />
               </DashboardLayout>
@@ -50,7 +49,7 @@ function App() {
         <Route
           path="/reports"
           element={
-            <PrivateRoute roles={["Super Admin", "Circle Approver", "Admin_Charge", "User","Office Approver"]}>
+            <PrivateRoute roles={["Super Admin", "Admin"]}>
               <DashboardLayout>
                 <ReportsPage />
               </DashboardLayout>

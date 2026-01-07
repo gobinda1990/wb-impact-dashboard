@@ -1,104 +1,78 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { getUserProfile, getUserRoles } from "../services/dashboardService";
 import { menuItems } from "../services/menuService";
+import { getUserProfile, getUserRoles } from "../services/dashboardService";
 import defaultAvatar from "../assets/avatar.png";
+import "../css/Sidebar.css";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const [user, setUser] = useState({});
-  const [isOpen, setIsOpen] = useState(window.innerWidth > 992);
   const location = useLocation();
+  const sidebarRef = useRef(null);
   const roles = getUserRoles() || [];
 
-  // Load user profile and handle window resize
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const data = await getUserProfile();
-        setUser(data);
-      } catch (err) {
-        console.error("Error loading user profile:", err);
-      }
-    };
-    loadProfile();
-
-    const handleResize = () => setIsOpen(window.innerWidth > 992);
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Filter menus based on user roles
   const visibleMenus = menuItems.filter((item) =>
     item.roles.some((r) => roles.includes(r))
   );
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getUserProfile();
+        setUser(data);
+      } catch {
+        console.warn("Profile fetch failed");
+      }
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+        if (window.innerWidth <= 992) setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [setIsOpen]);
+
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <button
-        className="btn btn-primary d-lg-none position-fixed top-0 start-0 m-2 z-3"
-        onClick={() => setIsOpen(!isOpen)}
-        style={{ borderRadius: "50%", width: "40px", height: "40px" }}
-      >
-        {isOpen ? "✖" : "☰"}
-      </button>
-
-      {/* Sidebar */}
-      <div
-        className={`sidebar shadow-lg text-white d-flex flex-column p-3 position-fixed top-0 start-0 vh-100 ${
-          isOpen ? "open" : "closed"
-        }`}
-        style={{
-          width: "240px",
-          background: "linear-gradient(180deg, #002147 0%, #004b8d 100%)",
-          transform: isOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: "transform 0.3s ease",
-          zIndex: 1050,
-        }}
-      >
-        {/* User Info */}
-        <div className="text-center mb-4">
-          <img
+      <aside ref={sidebarRef} className={`sidebar shadow-3d rounded-3d ${isOpen ? "open" : "closed"}`}>
+        <div className="sidebar-profile text-center">
+           <img
             src={user.profileImageUrl}
             alt="User Avatar"
             className="rounded-circle border border-light mb-2 shadow-sm"
             width="90"
             height="90"
-          />
-          <h6 className="fw-bold mb-0 text-white">{user?.fullName || "User"}</h6>
-          <Link
-            to="/my-profile"
-            className="text-light small text-decoration-none mt-1 d-inline-block opacity-75"
-          >
-            View Profile
-          </Link>
+          /><h6 className="fw-semibold mt-2 text-white mb-0">{user?.fullName || "Super Admin"}</h6>
+          <p className="text-secondary mb-1 small">{user?.role || "Administrator"}</p>
+          <Link to="/my-profile" className="text-light small text-decoration-none opacity-75 hover-underline">View Profile</Link>
         </div>
 
-        <hr className="border-light opacity-50" />
+        <hr className="sidebar-divider" />
 
-        {/* Menu Items */}
         <ul className="nav flex-column">
-          {visibleMenus.map((item, idx) => {
+          {visibleMenus.map((item, i) => {
             const Icon = item.icon;
+            const active = location.pathname === item.path;
             return (
-              <li key={idx} className="nav-item mb-2">
-                <Link
-                  to={item.path}
-                  className={`nav-link d-flex align-items-center px-3 py-2 rounded ${
-                    location.pathname === item.path
-                      ? "active bg-light text-primary fw-bold"
-                      : "text-white opacity-85"
-                  }`}
-                >
-                  {Icon && <Icon className="me-2" />}
-                  {item.title}
+              <li key={i} className="nav-item">
+                <Link to={item.path} className={`nav-link d-flex align-items-center ${active ? "active-link" : "inactive-link"}`}>
+                  {Icon && <Icon size={18} className="me-2" />}
+                  <span>{item.title}</span>
                 </Link>
               </li>
             );
           })}
         </ul>
-      </div>
+      </aside>
+
+      {isOpen && window.innerWidth <= 992 && (
+        <div className="sidebar-overlay" onClick={() => setIsOpen(false)}></div>
+      )}
     </>
   );
 };

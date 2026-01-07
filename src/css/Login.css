@@ -1,0 +1,141 @@
+body, html {
+  height: 100%;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+}
+
+/* Background */
+.login-page {
+  height: 100vh;
+  background: url("/images/ctd2.png") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 1rem;
+}
+
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+/* Login Card */
+.login-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.login-logo {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 0.5rem;
+}
+
+/* Input fields */
+.login-input .form-control {
+  border-left: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.login-input .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.login-input .input-group-text {
+  background: #fff;
+  border-right: none;
+  border-color: #ced4da;
+}
+
+/* Captcha section */
+.captcha-canvas {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Button */
+.login-btn {
+  border-radius: 8px;
+  padding: 0.6rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.login-btn:hover {
+  background-color: #005dc1;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+  }
+  .login-logo {
+    width: 80px;
+    height: 80px;
+  }
+  .login-btn {
+    font-size: 0.9rem;
+  }
+}
+/* Ensure visible, clean input borders */
+.login-input .form-control {
+  border: 1px solid #ced4da !important; /* restore border */
+  border-radius: 0.5rem;
+  box-shadow: none !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.login-input .form-control:focus {
+  border-color: #0d6efd !important;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Make sure icons look consistent */
+.login-input .input-group-text {
+  background: #fff;
+  border: 1px solid #ced4da !important;
+  border-right: none !important;
+  color: #6c757d;
+}
+
+/* Optional: Add right-side border for last icon (like eye icon) */
+.login-input .input-group-text:last-child {
+  border-left: none !important;
+  border-right: 1px solid #ced4da !important;
+}
+
+.alert {
+  border-radius: 8px;
+  font-weight: 500;
+  margin-top: 10px;
+}

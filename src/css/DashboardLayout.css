@@ -1,0 +1,27 @@
+.dashboard-layout {
+  display: flex;
+  font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+.main-content {
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.sidebar-open .main-content {
+  margin-left: 250px;
+}
+
+.sidebar-closed .main-content {
+  margin-left: 0;
+}
+
+.page-content {
+  padding: 2rem;
+}
+
+/* Shared Gradient Shimmer Animation */
+@keyframes gradient-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

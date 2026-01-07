@@ -1,0 +1,184 @@
+/* ================================ CARD CONTAINER - GLASSMORPHISM =================================== */
+.usercard-3d, .hover-lift {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+    padding: 20px;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px); /* subtle lift */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ================================ TABLE STYLING - FROSTED GLASS =================================== */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    overflow: hidden;
+    width: 100%;
+    color: #f0f0f0;
+}
+
+/* ================================ TABLE HEADER - RECTANGLE BASE =================================== */
+.table thead th {
+    background: rgba(0, 75, 141, 0.9); /* solid rectangular base */
+    color: #ffffff;
+    text-align: center;
+    vertical-align: bottom; /* text lower in the cell */
+    padding: 10px 6px;
+    font-weight: 600;
+    font-size: 0.65rem; /* smaller text */
+    line-height: 1.6; /* positions text lower */
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    border-radius: 0; /* rectangle base */
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+/* Floating optional label inside header */
+.table thead th span {
+    display: block;
+    font-size: 0.55rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 3px; /* spacing above main header text */
+}
+
+/* ================================ TABLE BODY / ROWS - BASE BORDER =================================== */
+.table tbody tr {
+    transition: all 0.25s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.3); /* visible base border */
+    cursor: default;
+    background: rgba(255, 255, 255, 0.05); /* light base background */
+}
+
+.table tbody tr:nth-of-type(even) {
+    background: rgba(255, 255, 255, 0.08); /* alternating row background */
+}
+
+.table tbody tr:hover {
+    background: rgba(0, 75, 141, 0.1); /* subtle hover highlight */
+    transform: translateY(0); /* no lift */
+    border-bottom-color: rgba(255,255,255,0.3); /* same border on hover */
+}
+
+/* Optional subtle divider inside cells */
+.table tbody td {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    vertical-align: middle;
+    padding: 8px 6px;
+}
+
+/* ================================ CELL & IMAGE =================================== */
+.table td img {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.3);
+    width: 42px;
+    height: 42px;
+    transition: none; /* removed hover effects */
+}
+
+/* ================================ BADGES =================================== */
+.badge {
+    font-weight: 600;
+    border-radius: 18px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    box-shadow: none;
+    display: inline-block;
+    backdrop-filter: blur(4px);
+    transition: none; /* removed hover effect */
+}
+
+/* Badge gradients without hover glow */
+.badge-main {
+    background: linear-gradient(135deg, #90caf9, #1565c0);
+    color: #fff;
+}
+
+.badge-additional {
+    background: linear-gradient(135deg, #a5d6a7, #2e7d32);
+    color: #fff;
+}
+
+.badge-module {
+    background: linear-gradient(135deg, #dcedc8, #33691e);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.badge-role {
+    background: linear-gradient(135deg, #e1bee7, #6a1b9a);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ================================ BUTTONS =================================== */
+.btn-outline-primary, .btn-outline-danger {
+    border-radius: 12px;
+    padding: 6px 16px;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    transition: background 0.25s ease, color 0.25s ease; /* simple hover */
+    text-shadow: none; /* removed neon */
+}
+
+.btn-outline-primary:hover {
+    background-color: #004b8d;
+    color: #fff;
+}
+
+.btn-outline-danger:hover {
+    background-color: #e53935;
+    color: #fff;
+}
+
+/* ================================ PAGINATION =================================== */
+.pagination-btn {
+    border-radius: 10px;
+    padding: 5px 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    transition: background 0.25s ease;
+}
+
+.pagination-btn:hover {
+    background-color: rgba(0,75,141,0.5);
+}
+
+/* ================================ HOVER / INTERACTION =================================== */
+.hover-highlight:hover {
+    background-color: rgba(0,75,141,0.08) !important; /* subtle highlight only */
+}
+
+.table th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ================================ RESPONSIVE =================================== */
+@media (max-width: 768px) {
+    .table thead { font-size: 0.7rem; }
+    .badge { font-size: 0.65rem; padding: 4px 10px; }
+    .table td img { width: 30px; height: 30px; }
+    .usercard-3d, .hover-lift { padding: 12px; }
+}

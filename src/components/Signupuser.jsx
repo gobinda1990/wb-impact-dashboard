@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { dashboardClient } from "../services/apiClient";
-import axios from "axios";
 import {
   FaSyncAlt,
   FaUser,
@@ -17,7 +16,7 @@ import {
 } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { parse, isValid } from "date-fns";
+import { isValid } from "date-fns";
 import "../css/SignupStyle.css";
 
 export default function SignupUser() {
@@ -28,6 +27,11 @@ export default function SignupUser() {
   const [captchaInput, setCaptchaInput] = useState("");
   const [errors, setErrors] = useState({});
   const canvasRef = useRef(null);
+
+  // ✅ Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("info"); // success | error
 
   const [formData, setFormData] = useState({
     hrms_code: "",
@@ -67,18 +71,6 @@ export default function SignupUser() {
     setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const showDatePicker = () => {
-    const input = document.getElementsByName("dt_of_join")[0];
-    input.type = "date";
-    input.max = new Date().toISOString().split("T")[0];
-  };
-
-  const showBirthDatePicker = () => {
-    const input = document.getElementsByName("dt_of_birth")[0];
-    input.type = "date";
-    input.max = new Date().toISOString().split("T")[0];
-  };
-
   const generateCaptcha = () => {
     const newCaptcha = Math.random().toString(36).substring(2, 8).toUpperCase();
     setCaptcha(newCaptcha);
@@ -91,8 +83,9 @@ export default function SignupUser() {
     ctx.fillText(newCaptcha, 20, 30);
 
     for (let i = 0; i < 3; i++) {
-      ctx.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255
-        }, 0.6)`;
+      ctx.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
+        Math.random() * 255
+      }, 0.6)`;
       ctx.beginPath();
       ctx.moveTo(Math.random() * 150, Math.random() * 40);
       ctx.lineTo(Math.random() * 150, Math.random() * 40);
@@ -114,9 +107,7 @@ export default function SignupUser() {
       newErrors.pan_no = "Invalid PAN format";
     if (!formData.dt_of_join) newErrors.dt_of_join = "Joining date required";
     if (!formData.dt_of_birth) newErrors.dt_of_birth = "Birth date required";
-    if (
-      !formData.passwd.match(/^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/)
-    )
+    if (!formData.passwd.match(/^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/))
       newErrors.passwd =
         "Password must have 8+ chars, 1 uppercase & 1 special symbol";
     if (formData.passwd !== formData.repasswd)
@@ -126,6 +117,13 @@ export default function SignupUser() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // ✅ Popup helper
+  const showPopup = (message, type = "info") => {
+    setModalMessage(message);
+    setModalType(type);
+    setShowModal(true);
   };
 
   const handleSubmit = async (e) => {
@@ -143,19 +141,27 @@ export default function SignupUser() {
     }
 
     try {
-      const response = await axios.post(
-        "http://10.153.36.161:8082/api/auth/signup",
+      const response = await dashboardClient.post(
+        "/auth/signup",
         formData,
         { headers: { "Content-Type": "application/json" } }
       );
 
       if (response.status === 201) {
-        alert("Signup Successful");
-        navigate("/");
+        showPopup("Signup Successful", "success");
+        setTimeout(() => navigate("/"), 1500);
+      } else {
+        showPopup(
+          response.data?.message || "Signup failed. Please check your details.",
+          "error"
+        );
       }
     } catch (error) {
-      console.error(error);
-      alert("Signup failed. Please check your details.");
+      console.error("Signup error:", error);
+      const backendMessage =
+        error.response?.data?.message ||
+        "Signup failed. Please check your details.";
+      showPopup(backendMessage, "error");
     }
   };
 
@@ -193,8 +199,8 @@ export default function SignupUser() {
             {/* HRMS Code */}
             <div className="col-md-6">
               <label className="form-label">
-                <FaIdCard className="me-2 text-primary" />
-                HRMS Code<span className="text-danger">*</span>
+                <FaIdCard className="me-2 text-primary" /> HRMS Code
+                <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -320,6 +326,7 @@ export default function SignupUser() {
                 <small className="text-danger">{errors.desig_cd}</small>
               )}
             </div>
+
             {/* PAN */}
             <div className="col-md-6">
               <label className="form-label">
@@ -367,78 +374,63 @@ export default function SignupUser() {
             </div>
 
             {/* Date of Birth */}
-<div className="col-md-6 position-relative">
-  <label className="form-label">
-    <FaCalendarAlt className="me-2 text-primary" /> Date of Birth
-    <span className="text-danger">*</span>
-  </label>
-  <DatePicker
-    selected={formData.dt_of_birth ? new Date(formData.dt_of_birth) : null}
-    onChange={(date) => {
-      if (date && isValid(date)) {
-        handleChange("dt_of_birth", date.toISOString().split("T")[0]);
-      }
-    }}
-    onChangeRaw={(e) => {
-      const entered = e.target.value;
-      const parsed = parse(entered, "yyyy-MM-dd", new Date());
-      if (isValid(parsed)) {
-        handleChange("dt_of_birth", parsed.toISOString().split("T")[0]);
-      }
-    }}
-    dateFormat="yyyy-MM-dd"
-    placeholderText="Select Date of Birth"
-    className="form-control glow-input custom-datepicker"
-    maxDate={new Date()}
-    showMonthDropdown
-    showYearDropdown
-    dropdownMode="select"
-    todayButton="Today"
-    autoComplete="off"
-    shouldCloseOnSelect={true}
-  />
-  <FaCalendarAlt className="calendar-icon" />
-  {errors.dt_of_birth && (
-    <small className="text-danger">{errors.dt_of_birth}</small>
-  )}
-</div>
+            <div className="col-md-6 position-relative">
+              <label className="form-label">
+                <FaCalendarAlt className="me-2 text-primary" /> Date of Birth
+                <span className="text-danger">*</span>
+              </label>
+              <DatePicker
+                selected={
+                  formData.dt_of_birth ? new Date(formData.dt_of_birth) : null
+                }
+                onChange={(date) => {
+                  if (date && isValid(date)) {
+                    handleChange(
+                      "dt_of_birth",
+                      date.toISOString().split("T")[0]
+                    );
+                  }
+                }}
+                dateFormat="yyyy-MM-dd"
+                placeholderText="Select Date of Birth"
+                className="form-control glow-input custom-datepicker"
+                maxDate={new Date()}
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+              />
+              {errors.dt_of_birth && (
+                <small className="text-danger">{errors.dt_of_birth}</small>
+              )}
+            </div>
 
-{/* Date of Joining */}
-<div className="col-md-6 position-relative">
-  <label className="form-label">
-    <FaCalendarAlt className="me-2 text-primary" /> Date of Joining
-    <span className="text-danger">*</span>
-  </label>
-  <DatePicker
-    selected={formData.dt_of_join ? new Date(formData.dt_of_join) : null}
-    onChange={(date) => {
-      if (date && isValid(date)) {
-        handleChange("dt_of_join", date.toISOString().split("T")[0]);
-      }
-    }}
-    onChangeRaw={(e) => {
-      const entered = e.target.value;
-      const parsed = parse(entered, "yyyy-MM-dd", new Date());
-      if (isValid(parsed)) {
-        handleChange("dt_of_join", parsed.toISOString().split("T")[0]);
-      }
-    }}
-    dateFormat="yyyy-MM-dd"
-    placeholderText="Select Date of Joining"
-    className="form-control glow-input custom-datepicker"
-    maxDate={new Date()}
-    showMonthDropdown
-    showYearDropdown
-    dropdownMode="select"
-    todayButton="Today"
-    autoComplete="off"
-    shouldCloseOnSelect={true}
-  />
-  <FaCalendarAlt className="calendar-icon" />
-  {errors.dt_of_join && (
-    <small className="text-danger">{errors.dt_of_join}</small>
-  )}
-</div>
+            {/* Date of Joining */}
+            <div className="col-md-6 position-relative">
+              <label className="form-label">
+                <FaCalendarAlt className="me-2 text-primary" /> Date of Joining
+                <span className="text-danger">*</span>
+              </label>
+              <DatePicker
+                selected={
+                  formData.dt_of_join ? new Date(formData.dt_of_join) : null
+                }
+                onChange={(date) => {
+                  if (date && isValid(date)) {
+                    handleChange("dt_of_join", date.toISOString().split("T")[0]);
+                  }
+                }}
+                dateFormat="yyyy-MM-dd"
+                placeholderText="Select Date of Joining"
+                className="form-control glow-input custom-datepicker"
+                maxDate={new Date()}
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+              />
+              {errors.dt_of_join && (
+                <small className="text-danger">{errors.dt_of_join}</small>
+              )}
+            </div>
 
             {/* Password */}
             <div className="col-md-6">
@@ -474,7 +466,7 @@ export default function SignupUser() {
               )}
             </div>
 
-            {/* Hint */}
+            {/* Hint Question */}
             <div className="col-md-6">
               <label className="form-label">
                 <FaQuestionCircle className="me-2 text-primary" /> Hint Question
@@ -497,6 +489,7 @@ export default function SignupUser() {
               )}
             </div>
 
+            {/* Hint Answer */}
             <div className="col-md-6">
               <label className="form-label">
                 <FaRegLightbulb className="me-2 text-primary" /> Hint Answer
@@ -545,7 +538,9 @@ export default function SignupUser() {
               onChange={(e) => setCaptchaInput(e.target.value)}
               required
             />
-            {captchaError && <small className="text-danger">{captchaError}</small>}
+            {captchaError && (
+              <small className="text-danger">{captchaError}</small>
+            )}
           </div>
 
           {/* Submit */}
@@ -570,6 +565,48 @@ export default function SignupUser() {
           </div>
         </form>
       </div>
+
+      {/* ✅ Bootstrap Modal Popup */}
+      {showModal && (
+        <div
+          className="modal fade show"
+          style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+          tabIndex="-1"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div
+                className={`modal-header ${
+                  modalType === "success" ? "bg-success" : "bg-danger"
+                } text-white`}
+              >
+                <h5 className="modal-title">
+                  {modalType === "success" ? "Success" : "Error"}
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body text-center">
+                <p>{modalMessage}</p>
+              </div>
+              <div className="modal-footer justify-content-center">
+                <button
+                  type="button"
+                  className={`btn ${
+                    modalType === "success" ? "btn-success" : "btn-danger"
+                  } px-4`}
+                  onClick={() => setShowModal(false)}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

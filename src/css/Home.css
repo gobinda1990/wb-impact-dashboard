@@ -1,0 +1,148 @@
+/* ========================
+   Container
+======================== */
+.home-container {
+  min-height: 85vh;
+  background-color: #f4f7fb;
+  padding: 2rem 1rem;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1f2937;
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* ========================
+   Search Bar
+======================== */
+.search-bar {
+  border-radius: 50px;
+  box-shadow: inset 6px 6px 12px rgba(0,0,0,0.12),
+              inset -6px -6px 12px rgba(255,255,255,0.7);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+/* ========================
+   Project Grid
+======================== */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+  gap: 1.5rem;
+}
+
+.project-card-wrapper {
+  display: flex;
+}
+
+/* Responsive: 1 per row on mobile */
+@media (max-width: 768px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================
+   Project Cards
+======================== */
+.project-card-3d {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: linear-gradient(145deg, #ffffff, #e0e0e0);
+  transition: all 0.35s ease;
+  position: relative;
+}
+
+.project-card-3d::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(270deg, rgba(11,61,145,0.05), rgba(26,79,184,0.05), rgba(11,61,145,0.05));
+  background-size: 400% 400%;
+  animation: gradient-shimmer 6s linear infinite;
+  z-index: 0;
+  border-radius: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.project-card-3d:hover::before {
+  opacity: 0.15;
+  animation-duration: 3s;
+  transform: translateY(-2px);
+}
+
+.project-card-3d * {
+  position: relative;
+  z-index: 1;
+}
+
+.project-card-3d .card-top-bar {
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(90deg, #0b3d91, #1a4fb8);
+  border-radius: 1rem 1rem 0 0;
+}
+
+.project-card-3d:hover {
+  transform: translateY(-10px);
+  box-shadow: 12px 12px 28px rgba(0,75,141,0.3), -12px -12px 28px rgba(255,255,255,0.7);
+}
+
+.project-card-3d h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0b3d91;
+}
+
+.project-card-3d p {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #374151;
+}
+
+.project-card-3d .badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 12px 12px 28px rgba(0,75,141,0.25), -12px -12px 28px rgba(255,255,255,0.7);
+}
+
+.alert {
+  border-radius: 1rem;
+  box-shadow: 6px 6px 20px rgba(0,0,0,0.12), -6px -6px 20px rgba(255,255,255,0.7);
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradient-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (max-width: 768px) {
+  .project-card-3d h6 { font-size: 0.875rem; }
+  .project-card-3d p { font-size: 0.75rem; }
+}

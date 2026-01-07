@@ -1,5 +1,7 @@
 import { dashboardClient } from './apiClient';
 
+// ------------------------- USERS -------------------------
+
 // Fetch all users
 export const fetchUsers = async () => {
   try {
@@ -11,61 +13,108 @@ export const fetchUsers = async () => {
   }
 };
 
-// Fetch all charges
+// Fetch single user basic details by HRMS Code
+export const fetchUserDetails = async (hrmsCode) => {
+  try {
+    const res = await dashboardClient.get(`/users/user-details/${hrmsCode}`);
+    return res.data?.data || null;
+  } catch (err) {
+    console.error(`Error fetching user details for HRMS Code ${hrmsCode}:`, err);
+    return null;
+  }
+};
+
+// Fetch user's posting details
+export const fetchUserPostingDetails = async (hrmsCode) => {
+  try {
+    const res = await dashboardClient.get(`/users/posting-details/${hrmsCode}`);
+    return res.data?.data || [];
+  } catch (err) {
+    console.error(`Error fetching posting details for HRMS Code ${hrmsCode}:`, err);
+    return [];
+  }
+};
+
+// Fetch user's assigned projects
+export const fetchUserProjectDetails = async (hrmsCode) => {
+  try {
+    const res = await dashboardClient.get(`/users/project-details/${hrmsCode}`);
+    return res.data?.data || [];
+  } catch (err) {
+    console.error(`Error fetching project details for HRMS Code ${hrmsCode}:`, err);
+    return [];
+  }
+};
+
+// Fetch assigned users
+export const fetchAssignedUsers = async () => {
+  try {
+    const res = await dashboardClient.get('/users/assigned');
+    return res.data?.data || [];
+  } catch (err) {
+    console.error('Error fetching assigned users:', err);
+    return [];
+  }
+};
+
+export const fetchAllAssignedUsers = async () => {
+  try {
+    const res = await dashboardClient.get('/users/assigned-all');
+    return res.data?.data || [];
+  } catch (err) {
+    console.error('Error fetching assigned users:', err);
+    return [];
+  }
+};
+
+// ------------------------- CURRENT USER -------------------------
+
+// Fetch details of the currently logged-in user (for role-based access control)
+export const fetchCurrentUser = async () => {
+  try {
+    const res = await dashboardClient.get('/users/current-user');
+    return res.data?.data || null;
+  } catch (err) {
+    console.error('Error fetching current user:', err);
+    return null;
+  }
+};
+
+
+// ------------------------- CHARGES / CIRCLES / OFFICES -------------------------
+
 export const fetchCharges = async () => {
   try {
-    const response = await dashboardClient.get('/users/charge-details');
-    return response.data?.data || [];
-  } catch (error) {
-    console.error('Error fetching charges:', error);
+    const res = await dashboardClient.get('/users/charge-details');
+    return res.data?.data || [];
+  } catch (err) {
+    console.error('Error fetching charges:', err);
     return [];
   }
 };
 
-// Fetch all circles
 export const fetchCircles = async () => {
   try {
-    const response = await dashboardClient.get('/users/circle-details');
-    return response.data?.data || [];
-  } catch (error) {
-    console.error('Error fetching circles:', error);
+    const res = await dashboardClient.get('/users/circle-details');
+    return res.data?.data || [];
+  } catch (err) {
+    console.error('Error fetching circles:', err);
     return [];
   }
 };
 
-// Fetch all offices (postings)
 export const fetchOffices = async () => {
-  try {
-    const response = await dashboardClient.get('/users/office-details');
-    return response.data?.data || [];
-  } catch (error) {
-    console.error('Error fetching offices:', error);
-    return [];
-  }
-};
-
-export const fetchRoles = async () => {
-  try {
-    const response = await dashboardClient.get('/users/roles');    
-    return response.data?.data || [];
-  } catch (error) {
-    console.error('Error fetching roles:', error);
-    return [];
-  }
-};
-
-// Fetch postings
-export const fetchPostings = async () => {
   try {
     const res = await dashboardClient.get('/users/office-details');
     return res.data?.data || [];
   } catch (err) {
-    console.error('Error fetching postings:', err);
+    console.error('Error fetching offices:', err);
     return [];
   }
 };
 
-// Fetch projects
+// ------------------------- PROJECTS / ROLES -------------------------
+
 export const fetchProjects = async () => {
   try {
     const res = await dashboardClient.get('/dashboard/project-details');
@@ -76,7 +125,18 @@ export const fetchProjects = async () => {
   }
 };
 
-// Assign roles & projects
+export const fetchRoles = async () => {
+  try {
+    const res = await dashboardClient.get('/users/roles');    
+    return res.data?.data || [];
+  } catch (err) {
+    console.error('Error fetching roles:', err);
+    return [];
+  }
+};
+
+// ------------------------- ASSIGN / EDIT -------------------------
+
 export const assignRolesAndProjects = async (assignData) => {
   try {
     const res = await dashboardClient.post('/users/assign', assignData);
@@ -87,28 +147,56 @@ export const assignRolesAndProjects = async (assignData) => {
   }
 };
 
-// Fetch assigned users
-export const fetchAssignedUsers = async () => {
+export const assignAddProjects = async (assignData) => {
   try {
-    const res = await dashboardClient.get('/users/assigned');
-    console.log("assigned>>>"+res.data.data);
-    return res.data?.data || [];
+    const res = await dashboardClient.post('/users/edit-projects', assignData);
+    return res.data;
   } catch (err) {
-    console.error('Error fetching assigned users:', err);
-    return [];
+    console.error('Error assigning additional projects:', err);
+    throw err;
   }
 };
 
-export const doRealeseEmp = async (id) => {
+export const releaseModule = async ({ hrmsCode, projectId, roleId }) => {
   try {
-    const res = await dashboardClient.get(`/dashboard/release-emp/${id}`);
-    alert(res.data?.data);
-    return res.data?.data || [];
+    const res = await dashboardClient.post('/users/releaseModule', { hrmsCode, projectId, roleId });
+    return res.data; // returns backend JSON { success, message, ... }
   } catch (err) {
-    console.error('Error Releasing:', err);
-    return [];
+    console.error('Error releasing module:', err);
+    throw err;
   }
 };
+
+// ------------------------- RELEASE POSTING -------------------------
+
+export const releasePosting = async ({ hrmsCode, postingType, officeId }) => {
+  try {
+    const res = await dashboardClient.post('/users/releasePosting', {
+      hrmsCode,
+      postingType,
+      officeId,
+    });
+    return res.data; // expects backend JSON like { success, message }
+  } catch (err) {
+    console.error('Error releasing posting:', err);
+    throw err;
+  }
+};
+
+
+// ------------------------- RELEASE EMPLOYEE -------------------------
+
+export const doReleaseEmp = async (releaseData) => {
+  try {
+    const res = await dashboardClient.post('/users/release-employee', releaseData);
+    return res.data;
+  } catch (err) {
+    console.error('Error releasing employee:', err);
+    throw err;
+  }
+};
+
+// ------------------------- IMAGE / ICON URLS -------------------------
 
 export const profile_img_url = 'http://localhost:8082/api/uploads/profile-pics';
 export const keyicon = '../images/keyic.png';  

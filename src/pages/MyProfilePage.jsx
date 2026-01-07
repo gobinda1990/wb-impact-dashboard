@@ -161,7 +161,7 @@ const MyProfilePage = () => {
                   </Form.Label>
                   <Form.Control
                     type="text"
-                    value={user.desigCd || ""}
+                    value={user.desigName || ""}
                     readOnly
                     className="readonly-field"
                   />

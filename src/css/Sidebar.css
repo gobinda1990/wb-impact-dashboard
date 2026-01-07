@@ -1,0 +1,59 @@
+.sidebar {
+  background: linear-gradient(145deg, #052864, #02112e);
+  color: white;
+  padding: 2rem 1rem;
+  width: 250px;
+  border-radius: 0; /* Sharp corners */
+  box-shadow: 6px 0 20px rgba(0,0,0,0.25), -6px 0 20px rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+/* Gradient Shimmer Overlay */
+.sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(270deg, #0b3d91, #1a4fb8, #0b3d91);
+  background-size: 400% 400%;
+  animation: gradient-shimmer 6s linear infinite;
+  z-index: 0;
+  opacity: 0.2;
+}
+
+.sidebar:hover::before {
+  opacity: 0.35;
+  animation-duration: 3s;
+  transform: translateY(-4px);
+}
+
+.sidebar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar .nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+
+.sidebar .active-link {
+  background: rgba(255,255,255,0.25);
+}

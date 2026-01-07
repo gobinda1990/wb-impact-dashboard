@@ -1,0 +1,105 @@
+.release-modal .modal-content {
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+}
+
+/* Fade in animation */
+.fade-in {
+  animation: fadeIn 0.35s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Image styling */
+.user-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #007bff;
+  object-fit: cover;
+}
+
+/* Section Cards */
+.section-card {
+  border-radius: 15px;
+  background-color: #fff;
+  transition: all 0.35s ease;
+}
+
+.section-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 75, 141, 0.25);
+}
+
+/* Gradient header */
+.bg-gradient {
+  background: linear-gradient(90deg, #0e70c5, #007bff);
+  border-radius: 12px 12px 0 0;
+  color: #fff;
+  padding: 12px 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+/* Info Card */
+.info-card {
+  border-radius: 15px;
+  background-color: #f9fbff;
+}
+
+/* Audit List */
+.audit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.audit-list li {
+  background-color: #f9fbfd;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+}
+
+.audit-list li:hover {
+  background-color: #eef5ff;
+  transform: translateX(4px);
+}
+
+/* Checkboxes */
+.form-check {
+  display: flex;
+  align-items: center;
+}
+
+.form-check-input {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.form-check-label {
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn-danger {
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+.btn-outline-secondary {
+  border-radius: 8px;
+}

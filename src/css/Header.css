@@ -1,0 +1,45 @@
+.dashboard-header {
+  background: linear-gradient(145deg, #052864, #02112e);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0; /* Sharp corners */
+  color: white;
+  box-shadow: 6px 6px 20px rgba(0,0,0,0.25), -6px -6px 20px rgba(255,255,255,0.1);
+  font-family: 'Inter', 'Roboto', sans-serif;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient Shimmer Overlay */
+.dashboard-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(270deg, #0b3d91, #1a4fb8, #0b3d91);
+  background-size: 400% 400%;
+  animation: gradient-shimmer 6s linear infinite;
+  z-index: 0;
+  opacity: 0.3;
+}
+
+.dashboard-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-header h5 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+}
+
+.dashboard-header .icon-btn svg {
+  width: 22px;
+  height: 22px;
+}
