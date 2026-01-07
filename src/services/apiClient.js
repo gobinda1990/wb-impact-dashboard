@@ -2,12 +2,12 @@ import axios from 'axios';
 import { getToken, setToken, logout } from './authService';
 
 export const authClient = axios.create({
-  baseURL: 'http://10.153.45.169:8081/api',
+  baseURL: 'http://10.153.43.8:8081/api',
   withCredentials: true,
 });
 
 export const dashboardClient = axios.create({
-  baseURL: 'http://10.153.45.169:8082/api',
+  baseURL: 'http://10.153.43.8:8082/api',
   withCredentials: true,
 });
 
