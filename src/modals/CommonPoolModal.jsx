@@ -76,7 +76,7 @@ const CommonPoolModal = ({ show, onClose, onComplete, user }) => {
     setLoading(true);
     setError("");
     try {
-      const [current, c, ch, o, p, r] = await Promise.all([
+      const [current, circlesData, chargesData, officesData, projectsData, rolesData] = await Promise.all([
         fetchCurrentUser(),
         fetchCircles(),
         fetchCharges(),
@@ -87,40 +87,65 @@ const CommonPoolModal = ({ show, onClose, onComplete, user }) => {
 
       setCurrentUser(current);
 
-      let roleFilteredCircles = c || [];
-      let roleFilteredCharges = ch || [];
-      let roleFilteredOffices = o || [];
+      let filteredCircles = circlesData || [];
+      let filteredCharges = chargesData || [];
+      let filteredOffices = officesData || [];
 
-      // Apply Role-based Restrictions
+      // ---------------- Role-based Restrictions ----------------
       if (current.role?.includes("Super Admin")) {
-        // Full access
+        // Full access to everything
       } else if (current.role?.includes("Admin")) {
-        if (current.postingType === "CI") {
-          roleFilteredCircles = c.filter((circle) =>
-            current.circleCds?.includes(circle.circleCd)
-          );
-          roleFilteredCharges = ch;
-          roleFilteredOffices = [];
-        } else if (current.postingType === "CH") {
-          roleFilteredCharges = ch.filter((charge) =>
-            current.chargeCds?.includes(charge.chargeCd)
-          );
-          roleFilteredOffices = [];
-          roleFilteredCircles = [];
-        } else if (current.postingType === "OF") {
-          roleFilteredOffices = o.filter((office) =>
-            current.officeCds?.includes(office.officeCd)
-          );
-          roleFilteredCircles = [];
-          roleFilteredCharges = [];
+        switch (current.postingType) {
+          case "CI":
+            // Only circles assigned to user
+            filteredCircles = circlesData.filter((circle) =>
+              current.circleCds?.includes(circle.circleCd)
+            );
+
+            // Only charges under allowed circles
+            filteredCharges = chargesData.filter((charge) =>
+              current.chargeCds?.includes(charge.chargeCd)
+            );
+
+            filteredOffices = [];
+            break;
+
+          case "CH":
+            // Only charges assigned to user
+            filteredCharges = chargesData.filter((charge) =>
+              current.chargeCds?.includes(charge.chargeCd)
+            );
+
+            filteredCircles = [];
+            filteredOffices = [];
+            break;
+
+          case "OF":
+            // Only offices assigned to user
+            filteredOffices = officesData.filter((office) =>
+              current.officeCds?.includes(office.officeCd)
+            );
+
+            filteredCircles = [];
+            filteredCharges = [];
+            break;
+
+          default:
+            filteredCircles = [];
+            filteredCharges = [];
+            filteredOffices = [];
         }
       }
 
-      setCircles(roleFilteredCircles);
-      setCharges(roleFilteredCharges);
-      setOffices(roleFilteredOffices);
-      setProjects(p || []);
-      setRoles(r || []);
+      setCircles(filteredCircles);
+      setCharges(filteredCharges);
+      setOffices(filteredOffices);
+      setProjects(projectsData || []);
+      setRoles(rolesData || []);
+
+      console.log("Filtered Circles:", filteredCircles);
+      console.log("Filtered Charges:", filteredCharges);
+      console.log("Filtered Offices:", filteredOffices);
     } catch (err) {
       console.error(err);
       setError("Failed to load modal data.");
@@ -353,7 +378,6 @@ const CommonPoolModal = ({ show, onClose, onComplete, user }) => {
 
       {/* BODY */}
       <Modal.Body style={{ backgroundColor: "#f9fbfd" }}>
-
         {/* Employee Section */}
         <Card className="mb-3 shadow-sm border-0 rounded-3">
           <Card.Header
@@ -613,6 +637,7 @@ const CommonPoolModal = ({ show, onClose, onComplete, user }) => {
             </Table>
           </Card.Body>
         </Card>
+
         {/* Alerts */}
         {error && (
           <Alert
