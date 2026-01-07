@@ -41,38 +41,39 @@ const UserCardTable = ({
   const [expandedUsers, setExpandedUsers] = useState({});
   const itemsPerPage = 7;
 
+  // ---------- Table Headers ----------
   const headers = {
-    commonpool: [
-      { label: "HRMS Code", key: "hrmsCode", sortable: true },
-      { label: "Full Name", key: "fullName", sortable: true },
-      { label: "Designation", key: "desigCd" },
-      { label: "Mobile No", key: "phoneNo" },
-      { label: "Last Posting" },
-      { label: "B.O. User ID", key: "boId" },
-      { label: "Assign" },
-    ],
-    assigned: [
-      { label: "HRMS Code", key: "hrmsCode" },
-      { label: "Full Name", key: "fullName" },
-      { label: "Designation", key: "designation" },
-      { label: "Main Posting", key: "main_posting" },
-      { label: "Modules" },
-      { label: "Roles" },
-      { label: "Assigned By", key: "approverName" },
-      { label: "B.O. User ID", key: "bo_id" },
-      { label: "Edit / Update" },
-      { label: "Release" },
-    ],
-    additional: [
-      { label: "HRMS Code", key: "hrmsCode" },
-      { label: "Full Name", key: "fullName" },
-      { label: "Additional Postings" },
-      { label: "Modules" },
-      { label: "Roles" },
-      { label: "Assign Additional" },
-      { label: "Release" },
-    ],
-  }[tableType];
+  commonpool: [
+    { label: "HRMS Code", key: "hrmsCode", sortable: true },
+    { label: "Full Name", key: "fullName", sortable: true },
+    { label: "Designation", key: "desigCd" },
+    { label: "Mobile No", key: "phoneNo" },
+    { label: "Last Posting" },
+    { label: "B.O. User ID", key: "boId" },
+    { label: "Assign" },
+  ],
+  assigned: [
+    { label: "HRMS Code", key: "hrmsCode" },
+    { label: "Full Name", key: "fullName" },
+    { label: "Designation", key: "designation" },
+    { label: "Main Posting", key: "main_posting", subtype: "Main" },
+    { label: "Modules/Roles" },
+    { label: "Assigned By", key: "approverName" },
+    { label: "B.O. User ID", key: "bo_id" },
+    { label: "Edit / Update" },
+    { label: "Release" },
+  ],
+  additional: [
+    { label: "HRMS Code", key: "hrmsCode" },
+    { label: "Full Name", key: "fullName" },
+    { label: "Main Posting", key: "main_posting", subtype: "Main" },
+    { label: "Additional Postings", key: "additional_postings", subtype: "Additional" },
+    { label: "Modules/Roles" },
+    { label: "Assign Additional" },
+    { label: "Release" },
+  ],
+}[tableType];
+
 
   const iconMap = {
     commonpool: <FaUsers />,
@@ -189,339 +190,301 @@ const UserCardTable = ({
             </thead>
             <tbody>
               {currentUsers.length ? (
-                currentUsers.map((u) => (
-                  <tr key={u.hrmsCode} className="hover-highlight">
-                    {/* HRMS Code */}
-                    <td>
-                      <Button
-                        variant="link"
-                        className="p-0 text-decoration-none fw-semibold text-primary"
-                        onClick={async () => {
-                          const data = await fetchUserDetails(u.hrmsCode);
-                          if (data) setSelectedUser(data);
-                        }}
-                      >
-                        {u.hrmsCode}
-                      </Button>
-                    </td>
+                currentUsers.map((u) => {
+                  // Prepare posting separation for 'additional' type
+                  const mainPosting =
+                    tableType === "additional"
+                      ? u.postings?.[0] || null
+                      : null;
+                  const additionalPostings =
+                    tableType === "additional"
+                      ? u.postings?.slice(1) || []
+                      : [];
 
-                    {/* Full Name */}
-                    <td className="text-start">
-                      <div className="d-flex align-items-center">
-                        <img
-                          src={u.profileImageUrl || "/images/defaultavatar.png"}
-                          alt={u.fullName || "User"}
-                          width="35"
-                          height="35"
-                          className="rounded-circle me-2"
-                          style={{ objectFit: "cover", border: "1px solid #ddd" }}
-                        />
-                        <span>{u.fullName || "-"}</span>
-                      </div>
-                    </td>
+                  return (
+                    <tr key={u.hrmsCode} className="hover-highlight">
+                      {/* HRMS Code */}
+                      <td>
+                        <Button
+                          variant="link"
+                          className="p-0 text-decoration-none fw-semibold text-primary"
+                          onClick={async () => {
+                            const data = await fetchUserDetails(u.hrmsCode);
+                            if (data) setSelectedUser(data);
+                          }}
+                        >
+                          {u.hrmsCode}
+                        </Button>
+                      </td>
 
-                    {/* COMMON POOL */}
-                    {tableType === "commonpool" && (
-                      <>
-                        <td>{u.desigName || "-"}</td>
-                        <td>{u.phoneNo || "-"}</td>
-                        <td>New User</td>
-                        <td>{u.boId || "-"}</td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="outline-primary"
-                            onClick={() => handleEdit(u)}
-                          >
-                            <FaUserEdit />
-                          </Button>
-                        </td>
-                      </>
-                    )}
+                      {/* Full Name */}
+                      <td className="text-start">
+                        <div className="d-flex align-items-center">
+                          <img
+                            src={
+                              u.profileImageUrl || "/images/defaultavatar.png"
+                            }
+                            alt={u.fullName || "User"}
+                            width="35"
+                            height="35"
+                            className="rounded-circle me-2"
+                            style={{
+                              objectFit: "cover",
+                              border: "1px solid #ddd",
+                            }}
+                          />
+                          <span>{u.fullName || "-"}</span>
+                        </div>
+                      </td>
 
-                    {/* ASSIGNED EMPLOYEES */}
-                    {tableType === "assigned" && (
-                      <>
-                        <td>{u.desigName || "-"}</td>
+                      {/* COMMON POOL */}
+                      {tableType === "commonpool" && (
+                        <>
+                          <td>{u.desigName || "-"}</td>
+                          <td>{u.phoneNo || "-"}</td>
+                          <td>New User</td>
+                          <td>{u.boId || "-"}</td>
+                          <td>
+                            <Button
+                              size="sm"
+                              variant="outline-primary"
+                              onClick={() => handleEdit(u)}
+                            >
+                              <FaUserEdit />
+                            </Button>
+                          </td>
+                        </>
+                      )}
 
-                        {/* MAIN POSTING */}
-                        <td className="main-posting-cell">
-                          {safeArray(u.postings).length ? (
-                            <>
-                              <span className="badge bg-info-subtle text-info fw-semibold">
-                                {u.postings[0].officeName}
-                              </span>
-                              {expandedUsers[`posting-${u.hrmsCode}`] &&
-                                u.postings.slice(1).map((p, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="badge bg-info-subtle text-info fw-semibold ms-1"
+                      {/* ASSIGNED EMPLOYEES */}
+                      {tableType === "assigned" && (
+                        <>
+                          <td>{u.desigName || "-"}</td>
+                          {/* MAIN POSTING */}
+                          <td className="main-posting-cell">
+                            {safeArray(u.postings).length ? (
+                              <>
+                                <span className="badge bg-info-subtle text-info fw-semibold">
+                                  {u.postings[0].officeName}
+                                </span>
+                                {expandedUsers[`posting-${u.hrmsCode}`] &&
+                                  u.postings.slice(1).map((p, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="badge bg-info-subtle text-info fw-semibold ms-1"
+                                    >
+                                      {p.officeName}
+                                    </span>
+                                  ))}
+                                {u.postings.length > 1 && (
+                                  <Button
+                                    size="sm"
+                                    variant="link"
+                                    className="p-0 ms-1"
+                                    onClick={() =>
+                                      toggleExpand(`posting-${u.hrmsCode}`)
+                                    }
                                   >
-                                    {p.officeName}
-                                  </span>
-                                ))}
-                              {u.postings.length > 1 && (
-                                <Button
-                                  size="sm"
-                                  variant="link"
-                                  className="p-0 ms-1"
-                                  onClick={() =>
-                                    toggleExpand(`posting-${u.hrmsCode}`)
-                                  }
-                                >
-                                  {expandedUsers[`posting-${u.hrmsCode}`] ? (
-                                    <FaChevronUp className="text-info" />
-                                  ) : (
-                                    <FaChevronDown className="text-info" />
-                                  )}
-                                </Button>
-                              )}
-                            </>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
+                                    {expandedUsers[`posting-${u.hrmsCode}`] ? (
+                                      <FaChevronUp className="text-info" />
+                                    ) : (
+                                      <FaChevronDown className="text-info" />
+                                    )}
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
 
-                        {/* MODULES */}
-                        <td className="modules-cell">
-                          {safeArray(u.projects).length ? (
-                            <>
-                              <span className="badge bg-success-subtle text-success fw-semibold">
-                                {u.projects[0].projectName}
-                              </span>
-                              {expandedUsers[`modules-${u.hrmsCode}`] &&
-                                u.projects.slice(1).map((p, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="badge bg-success-subtle text-success fw-semibold ms-1"
+                          {/* MODULES */}
+                          <td className="modules-cell text-start">
+                            {safeArray(u.projects).length ? (
+                              <>
+                                {safeArray(u.projects)
+                                  .slice(
+                                    0,
+                                    expandedUsers[`modules-${u.hrmsCode}`]
+                                      ? undefined
+                                      : 1
+                                  )
+                                  .map((p, idx) => (
+                                    <div key={idx} className="mb-1">
+                                      <span className="badge bg-success-subtle text-success fw-semibold">
+                                        {p.projectName}
+                                      </span>{" "}
+                                      <span className="badge bg-primary-subtle text-primary fw-semibold">
+                                        {p.roleName}
+                                      </span>
+                                    </div>
+                                  ))}
+
+                                {u.projects.length > 1 && (
+                                  <Button
+                                    size="sm"
+                                    variant="link"
+                                    className="p-0"
+                                    onClick={() =>
+                                      toggleExpand(`modules-${u.hrmsCode}`)
+                                    }
                                   >
-                                    {p.projectName}
-                                  </span>
-                                ))}
-                              {u.projects.length > 1 && (
-                                <Button
-                                  size="sm"
-                                  variant="link"
-                                  className="p-0 ms-1"
-                                  onClick={() =>
-                                    toggleExpand(`modules-${u.hrmsCode}`)
-                                  }
-                                >
-                                  {expandedUsers[`modules-${u.hrmsCode}`] ? (
-                                    <FaChevronUp className="text-success" />
-                                  ) : (
-                                    <FaChevronDown className="text-success" />
-                                  )}
-                                </Button>
-                              )}
-                            </>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
+                                    {expandedUsers[`modules-${u.hrmsCode}`] ? (
+                                      <FaChevronUp className="text-success" />
+                                    ) : (
+                                      <FaChevronDown className="text-success" />
+                                    )}
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
 
-                        {/* ROLES */}
-                        <td className="role-cell">
-                          {safeArray(u.projects).length ? (
-                            <>
-                              <span className="badge bg-success-subtle text-success fw-semibold">
-                                {u.projects[0].roleName}
+                          <td>{u.postings?.[0]?.approverName || "-"}</td>
+                          <td>{u.boId || "-"}</td>
+                          <td>
+                            <Button
+                              size="sm"
+                              variant="outline-primary"
+                              onClick={() => handleEditProject(u)}
+                            >
+                              <FaUserEdit />
+                            </Button>
+                          </td>
+                          <td>
+                            <Button
+                              size="sm"
+                              variant="outline-danger"
+                              onClick={() => handleRelease(u)}
+                            >
+                              <FaUserMinus />
+                            </Button>
+                          </td>
+                        </>
+                      )}
+
+                      {/* ADDITIONAL EMPLOYEES */}
+                      {tableType === "additional" && (
+                        <>
+                          {/* MAIN POSTING */}
+                          <td>
+                            {mainPosting ? (
+                              <span className="badge bg-primary-subtle text-primary fw-semibold">
+                                {mainPosting.officeName}
                               </span>
-                              {expandedUsers[`roles-${u.hrmsCode}`] &&
-                                u.projects.slice(1).map((p, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="badge bg-success-subtle text-success fw-semibold ms-1"
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+
+                          {/* ADDITIONAL POSTINGS */}
+                          <td>
+                            {safeArray(additionalPostings).length ? (
+                              <>
+                                <span className="badge bg-info-subtle text-info fw-semibold">
+                                  {additionalPostings[0].officeName}
+                                </span>
+                                {expandedUsers[`addpost-${u.hrmsCode}`] &&
+                                  additionalPostings.slice(1).map((p, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="badge bg-light text-secondary ms-1"
+                                    >
+                                      {p.officeName}
+                                    </span>
+                                  ))}
+                                {additionalPostings.length > 1 && (
+                                  <Button
+                                    size="sm"
+                                    variant="link"
+                                    className="p-0 ms-1"
+                                    onClick={() =>
+                                      toggleExpand(`addpost-${u.hrmsCode}`)
+                                    }
                                   >
-                                    {p.roleName}
-                                  </span>
-                                ))}
-                              {u.projects.length > 1 && (
-                                <Button
-                                  size="sm"
-                                  variant="link"
-                                  className="p-0 ms-1"
-                                  onClick={() =>
-                                    toggleExpand(`roles-${u.hrmsCode}`)
-                                  }
-                                >
-                                  {expandedUsers[`roles-${u.hrmsCode}`] ? (
-                                    <FaChevronUp className="text-success" />
-                                  ) : (
-                                    <FaChevronDown className="text-success" />
-                                  )}
-                                </Button>
-                              )}
-                            </>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
+                                    {expandedUsers[`addpost-${u.hrmsCode}`] ? (
+                                      <FaChevronUp className="text-info" />
+                                    ) : (
+                                      <FaChevronDown className="text-info" />
+                                    )}
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
 
-                        {/* LAST FOUR COLUMNS */}
-                        <td>{u.postings?.[0]?.approverName || "-"}</td>
-                        <td>{u.boId || "-"}</td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="outline-primary"
-                            onClick={() => handleEditProject(u)}
-                          >
-                            <FaUserEdit />
-                          </Button>
-                        </td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="outline-danger"
-                            onClick={() => handleRelease(u)}
-                          >
-                            <FaUserMinus />
-                          </Button>
-                        </td>
-                      </>
-                    )}
+                          {/* MODULES */}
+                          <td className="modules-cell text-start">
+                            {safeArray(u.projects).length ? (
+                              <>
+                                {safeArray(u.projects)
+                                  .slice(
+                                    0,
+                                    expandedUsers[`modules-${u.hrmsCode}`]
+                                      ? undefined
+                                      : 1
+                                  )
+                                  .map((p, idx) => (
+                                    <div key={idx} className="mb-1">
+                                      <span className="badge bg-success-subtle text-success fw-semibold">
+                                        {p.projectName}
+                                      </span>{" "}
+                                      <span className="badge bg-primary-subtle text-primary fw-semibold">
+                                        {p.roleName}
+                                      </span>
+                                    </div>
+                                  ))}
 
-                    {/* ADDITIONAL POSTING EMPLOYEES */}
-                    {tableType === "additional" && (
-                      <>
-                        {/* ADDITIONAL POSTING */}
-                        <td className="main-posting-cell">
-                          {safeArray(u.postings).length ? (
-                            <>
-                              <span className="badge bg-info-subtle text-info fw-semibold">
-                                {u.postings[0].officeName}
-                              </span>
-                              {expandedUsers[`addpost-${u.hrmsCode}`] &&
-                                u.postings.slice(1).map((p, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="badge bg-light text-secondary ms-1"
+                                {u.projects.length > 1 && (
+                                  <Button
+                                    size="sm"
+                                    variant="link"
+                                    className="p-0"
+                                    onClick={() =>
+                                      toggleExpand(`modules-${u.hrmsCode}`)
+                                    }
                                   >
-                                    {p.officeName}
-                                  </span>
-                                ))}
-                              {u.postings.length > 1 && (
-                                <Button
-                                  size="sm"
-                                  variant="link"
-                                  className="p-0 ms-1"
-                                  onClick={() =>
-                                    toggleExpand(`addpost-${u.hrmsCode}`)
-                                  }
-                                >
-                                  {expandedUsers[`addpost-${u.hrmsCode}`] ? (
-                                    <FaChevronUp className="text-info" />
-                                  ) : (
-                                    <FaChevronDown className="text-info" />
-                                  )}
-                                </Button>
-                              )}
-                            </>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
+                                    {expandedUsers[`modules-${u.hrmsCode}`] ? (
+                                      <FaChevronUp className="text-success" />
+                                    ) : (
+                                      <FaChevronDown className="text-success" />
+                                    )}
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
 
-                        {/* MODULES */}
-                        <td className="modules-cell">
-                          {safeArray(u.projects).length ? (
-                            <>
-                              <span className="badge bg-success-subtle text-success fw-semibold">
-                                {u.projects[0].projectName}
-                              </span>
-                              {expandedUsers[`addmodules-${u.hrmsCode}`] &&
-                                u.projects.slice(1).map((p, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="badge bg-success-subtle text-success fw-semibold"
-                                  >
-                                    {p.projectName}
-                                  </span>
-                                ))}
-                              {u.projects.length > 1 && (
-                                <Button
-                                  size="sm"
-                                  variant="link"
-                                  className="p-0 ms-1"
-                                  onClick={() =>
-                                    toggleExpand(`addmodules-${u.hrmsCode}`)
-                                  }
-                                >
-                                  {expandedUsers[`addmodules-${u.hrmsCode}`] ? (
-                                    <FaChevronUp className="text-success" />
-                                  ) : (
-                                    <FaChevronDown className="text-success" />
-                                  )}
-                                </Button>
-                              )}
-                            </>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
-
-                        {/* ROLES */}
-                        <td className="role-cell">
-                          {safeArray(u.projects).length ? (
-                            <>
-                              <span className="badge bg-success-subtle text-success fw-semibold">
-                                {u.projects[0].roleName}
-                              </span>
-                              {expandedUsers[`addroles-${u.hrmsCode}`] &&
-                                u.projects.slice(1).map((p, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="badge bg-success-subtle text-success fw-semibold ms-1"
-                                  >
-                                    {p.roleName}
-                                  </span>
-                                ))}
-                              {u.projects.length > 1 && (
-                                <Button
-                                  size="sm"
-                                  variant="link"
-                                  className="p-0 ms-1"
-                                  onClick={() =>
-                                    toggleExpand(`addroles-${u.hrmsCode}`)
-                                  }
-                                >
-                                  {expandedUsers[`addroles-${u.hrmsCode}`] ? (
-                                    <FaChevronUp className="text-secondary" />
-                                  ) : (
-                                    <FaChevronDown className="text-secondary" />
-                                  )}
-                                </Button>
-                              )}
-                            </>
-                          ) : (
-                            "-"
-                          )}
-                        </td>
-
-                        {/* LAST TWO COLUMNS */}
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="outline-primary"
-                            onClick={() => handleEdit(u)}
-                          >
-                            <FaUserEdit />
-                          </Button>
-                        </td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="outline-danger"
-                            onClick={() => handleRelease(u)}
-                          >
-                            <FaUserMinus />
-                          </Button>
-                        </td>
-                      </>
-                    )}
-                  </tr>
-                ))
+                          {/* ACTION BUTTONS */}
+                          <td>
+                            <Button
+                              size="sm"
+                              variant="outline-primary"
+                              onClick={() => handleEdit(u)}
+                            >
+                              <FaUserEdit />
+                            </Button>
+                          </td>
+                          <td>
+                            <Button
+                              size="sm"
+                              variant="outline-danger"
+                              onClick={() => handleRelease(u)}
+                            >
+                              <FaUserMinus />
+                            </Button>
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td colSpan={headers.length} className="text-center text-muted py-4">

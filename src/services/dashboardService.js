@@ -66,3 +66,8 @@ export const getUserRoles = () => {
     return [];
   }
 };
+
+export const addModule = async (moduleData) => {
+  const res = await dashboardClient.post("/dashboard/add-module", moduleData);
+  return res.data?.data;
+};

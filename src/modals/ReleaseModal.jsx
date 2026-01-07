@@ -94,6 +94,24 @@ const ReleaseModal = ({ user, show, onClose, onComplete, projects = [] }) => {
     );
   };
 
+  // ------------------- Select All Handlers -------------------
+  const toggleSelectAll = (type, checked) => {
+    if (type === "postings") {
+      setSelectedPostings(checked ? postings.map((p) => `${p.postingType}-${p.officeId}`) : []);
+    } else if (type === "modules") {
+      setSelectedProjects(checked ? assignedProjects.map((m) => m.projectId) : []);
+    }
+  };
+
+  const isAllSelected = (type) => {
+    if (type === "postings")
+      return postings.length > 0 && selectedPostings.length === postings.length;
+    if (type === "modules")
+      return assignedProjects.length > 0 && selectedProjects.length === assignedProjects.length;
+    return false;
+  };
+
+
   // ------------------- Handle Release -------------------
   const handleRelease = () => {
     setError("");
@@ -157,8 +175,18 @@ const ReleaseModal = ({ user, show, onClose, onComplete, projects = [] }) => {
   return (
     <>
       <Modal show={show} onHide={onClose} size="xl" centered backdrop="static">
-        <Modal.Header closeButton style={{ background: "#002147", color: "white" }}>
-          <Modal.Title>
+        <Modal.Header
+          closeButton
+          closeVariant="white"
+          style={{
+            background: "linear-gradient(90deg, #004b8d, #007bff)",
+            color: "white",
+            borderBottom: "3px solid #007bff",
+            fontWeight: "600",
+            letterSpacing: "0.3px",
+          }}
+        >
+          <Modal.Title className="d-flex align-items-center">
             <FaUserMinus className="me-2" /> Release User – {userDetails.fullName || "Employee"}
           </Modal.Title>
         </Modal.Header>
@@ -171,17 +199,6 @@ const ReleaseModal = ({ user, show, onClose, onComplete, projects = [] }) => {
             </div>
           ) : (
             <>
-              {error && (
-                <Alert variant="danger" onClose={() => setError("")} dismissible>
-                  <FaExclamationTriangle className="me-2" />
-                  {error}
-                </Alert>
-              )}
-              {success && (
-                <Alert variant="success" onClose={() => setSuccess("")} dismissible>
-                  {success}
-                </Alert>
-              )}
 
               {/* Employee Section */}
               <Card className="mb-3 shadow-sm border-0 rounded-3">
@@ -254,7 +271,13 @@ const ReleaseModal = ({ user, show, onClose, onComplete, projects = [] }) => {
                             <th>Posting Type</th>
                             <th>Office Type</th>
                             <th>Office Name</th>
-                            <th>Select</th> {/* Move checkbox to last */}
+                            <th>Select{" "}
+                              <Form.Check
+                                type="checkbox"
+                                className="ms-1"
+                                checked={isAllSelected("postings")}
+                                onChange={(e) => toggleSelectAll("postings", e.target.checked)}
+                              /></th> {/* Move checkbox to last */}
                           </tr>
                         </thead>
                         <tbody>
@@ -310,7 +333,13 @@ const ReleaseModal = ({ user, show, onClose, onComplete, projects = [] }) => {
                           <tr>
                             <th>Module Name</th>
                             <th>Role</th>
-                            <th>Select</th> {/* Checkbox last */}
+                            <th>Select{" "}
+                              <Form.Check
+                                type="checkbox"
+                                className="ms-1"
+                                checked={isAllSelected("modules")}
+                                onChange={(e) => toggleSelectAll("modules", e.target.checked)}
+                              /></th> {/* Checkbox last */}
                           </tr>
                         </thead>
                         <tbody>
@@ -360,6 +389,17 @@ const ReleaseModal = ({ user, show, onClose, onComplete, projects = [] }) => {
                 </Collapse>
               </Card>
             </>
+          )}
+          {error && (
+            <Alert variant="danger" onClose={() => setError("")} dismissible>
+              <FaExclamationTriangle className="me-2" />
+              {error}
+            </Alert>
+          )}
+          {success && (
+            <Alert variant="success" onClose={() => setSuccess("")} dismissible>
+              {success}
+            </Alert>
           )}
         </Modal.Body>
 

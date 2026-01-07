@@ -39,28 +39,49 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   return (
     <>
-      <aside ref={sidebarRef} className={`sidebar shadow-3d rounded-3d ${isOpen ? "open" : "closed"}`}>
+      <aside
+        ref={sidebarRef}
+        className={`sidebar shadow-3d rounded-3d ${isOpen ? "open" : "closed"}`}
+      >
+        {/* Profile Section */}
         <div className="sidebar-profile text-center">
-           <img
-            src={user.profileImageUrl}
+          <img
+            src={user.profileImageUrl || defaultAvatar}
             alt="User Avatar"
             className="rounded-circle border border-light mb-2 shadow-sm"
             width="90"
             height="90"
-          /><h6 className="fw-semibold mt-2 text-white mb-0">{user?.fullName || "Super Admin"}</h6>
-          <p className="text-secondary mb-1 small">{user?.role || "Administrator"}</p>
-          <Link to="/my-profile" className="text-light small text-decoration-none opacity-75 hover-underline">View Profile</Link>
+          />
+          <h6 className="fw-semibold mt-2 mb-0" style={{ color: "#f1f1f1" }}>
+            {user?.fullName || "Super Admin"}
+          </h6>
+          <p className="mb-1 small" style={{ color: "#cfd8dc" }}>
+            {user?.role || "Administrator"}
+          </p>
+          <Link
+            to="/my-profile"
+            className="small text-decoration-none"
+            style={{ color: "#a8c0ff", opacity: 0.8 }}
+            onMouseOver={(e) => (e.currentTarget.style.color = "#b0d6ff")}
+            onMouseOut={(e) => (e.currentTarget.style.color = "#a8c0ff")}
+          >
+            View Profile
+          </Link>
         </div>
 
         <hr className="sidebar-divider" />
 
+        {/* Menu Links */}
         <ul className="nav flex-column">
           {visibleMenus.map((item, i) => {
             const Icon = item.icon;
             const active = location.pathname === item.path;
             return (
               <li key={i} className="nav-item">
-                <Link to={item.path} className={`nav-link d-flex align-items-center ${active ? "active-link" : "inactive-link"}`}>
+                <Link
+                  to={item.path}
+                  className={`nav-link d-flex align-items-center ${active ? "active-link" : ""}`}
+                >
                   {Icon && <Icon size={18} className="me-2" />}
                   <span>{item.title}</span>
                 </Link>
@@ -70,8 +91,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </ul>
       </aside>
 
+      {/* Mobile Overlay */}
       {isOpen && window.innerWidth <= 992 && (
-        <div className="sidebar-overlay" onClick={() => setIsOpen(false)}></div>
+        <div
+          className="sidebar-overlay"
+          onClick={() => setIsOpen(false)}
+        ></div>
       )}
     </>
   );

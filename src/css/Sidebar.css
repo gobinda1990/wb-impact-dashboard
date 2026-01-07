@@ -1,9 +1,10 @@
+/* Sidebar Base */
 .sidebar {
   background: linear-gradient(145deg, #052864, #02112e);
-  color: white;
+  color: #f1f1f1;
   padding: 2rem 1rem;
   width: 250px;
-  border-radius: 0; /* Sharp corners */
+  border-radius: 0; 
   box-shadow: 6px 0 20px rgba(0,0,0,0.25), -6px 0 20px rgba(255,255,255,0.1);
   display: flex;
   flex-direction: column;
@@ -23,11 +24,11 @@
   background-size: 400% 400%;
   animation: gradient-shimmer 6s linear infinite;
   z-index: 0;
-  opacity: 0.2;
+  opacity: 0.15;
 }
 
 .sidebar:hover::before {
-  opacity: 0.35;
+  opacity: 0.25;
   animation-duration: 3s;
   transform: translateY(-4px);
 }
@@ -37,23 +38,79 @@
   z-index: 1;
 }
 
+/* Profile Section */
+.sidebar-profile {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-profile h6 {
+  color: #f1f1f1;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.sidebar-profile p {
+  color: #cfd8dc;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-profile a {
+  color: #a8c0ff;
+  font-size: 0.75rem;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.sidebar-profile a:hover {
+  opacity: 1;
+  color: #b0d6ff;
+}
+
+/* Menu Links */
 .sidebar .nav-link {
   font-size: 0.875rem;
   font-weight: 500;
-  color: white;
+  color: #f1f1f1;
   padding: 0.5rem 1rem;
   border-radius: 0.75rem;
   margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
+/* Hover */
 .sidebar .nav-link:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.15);
+  color: #c0e0ff;
+  transform: translateX(2px);
 }
 
+/* Active Menu - Office Friendly & Visible */
 .sidebar .active-link {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.25); /* brighter than normal */
+  color: #e0f0ff; /* readable light blue */
+  font-weight: 600;
+  border-left: 4px solid #7ec0ff; /* subtle left accent */
+}
+
+/* Divider */
+.sidebar-divider {
+  border-color: rgba(255, 255, 255, 0.2);
+  margin: 1rem 0;
+}
+
+/* Mobile Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 50;
 }

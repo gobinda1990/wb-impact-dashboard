@@ -13,6 +13,7 @@ import "./index.css";
 import Signup from './components/Signupuser.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
+import ModuleManager from "./pages/ModuleManager.jsx";
 
 
 function App() {
@@ -56,7 +57,16 @@ function App() {
             </PrivateRoute>
           }
         />
-
+        <Route
+          path="/addmodule"
+          element={
+            <PrivateRoute roles={["Super Admin"]}>
+              <DashboardLayout>
+                <ModuleManager />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/custodian"
           element={

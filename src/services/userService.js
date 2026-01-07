@@ -57,15 +57,22 @@ export const fetchAssignedUsers = async () => {
   }
 };
 
-export const fetchAllAssignedUsers = async () => {
+/**
+ * Fetch assigned users with optional subType filter
+ * @param {string} subType - "main" or "additional"
+ */
+export const fetchAllAssignedUsers = async (subType = "") => {
   try {
-    const res = await dashboardClient.get('/users/assigned-all');
+    const res = await dashboardClient.get("/users/assigned-all", {
+      params: subType ? { subType } : {},
+    });
     return res.data?.data || [];
   } catch (err) {
-    console.error('Error fetching assigned users:', err);
+    console.error("Error fetching assigned users:", err);
     return [];
   }
 };
+
 
 // ------------------------- CURRENT USER -------------------------
 

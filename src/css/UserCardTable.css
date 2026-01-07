@@ -182,3 +182,43 @@
     .table td img { width: 30px; height: 30px; }
     .usercard-3d, .hover-lift { padding: 12px; }
 }
+/* --- Responsive, clean Modules/Roles column --- */
+.modules-cell {
+  min-width: 220px;
+  max-width: 350px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.module-role-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.module-role-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+.module-badge {
+  background-color: rgba(25, 135, 84, 0.1); /* Bootstrap success-subtle tone */
+  color: #198754;
+  font-weight: 600;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.role-badge {
+  background-color: rgba(13, 110, 253, 0.1); /* Bootstrap primary-subtle tone */
+  color: #0d6efd;
+  font-weight: 600;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

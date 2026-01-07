@@ -1,5 +1,5 @@
 // // src/services/menuService.js
-import { FaHome, FaUsers, FaUserCheck, FaChartBar, FaKey, FaBoxOpen, FaCog } from "react-icons/fa";
+import { FaHome, FaUsers, FaUserCheck, FaChartBar, FaKey, FaBoxOpen, FaCog, FaPlus } from "react-icons/fa";
 
 // Export the menu items with **icon references**, not JSX
 export const menuItems = [
@@ -22,17 +22,17 @@ export const menuItems = [
     roles: ["Super Admin", "Admin", "User"],
   },
   {
+      title: "Add New Modules",
+      path: "/addmodule",
+      icon: FaPlus,
+      roles: ["Super Admin"],
+    },
+  {
     title: "Custodian Panel",
     path: "/custodian",
     icon: FaKey,
     roles: ["Custodian"],
   },
-  // {
-  //   title: "My Assets",
-  //   path: "/custodian-assets",
-  //   icon: FaBoxOpen,
-  //   roles: ["Custodian", "Super Admin", "Circle Approver", "Charge Approver","Office Approver"],
-  // },
   {
     title: "Settings",
     path: "/settings",
@@ -42,8 +42,7 @@ export const menuItems = [
   {
     title: "Change Password",
     path: "/resetPassword",
-    icon: FaKey,
-    // <FontAwesomeIcon icon={faLock} />
+    icon: FaKey,    
     roles: ["Super Admin"],
   },
 ];
