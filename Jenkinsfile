@@ -12,10 +12,8 @@ pipeline {
         // ===== Docker Build Variables =====
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
-        HOST_PORT = '80'           // Port on host machine
-        CONTAINER_HTTPS_PORT = '443' // Port inside container (HTTPS)
-        SSL_CERT_PATH = '/path/to/cert.pem'   // Path to SSL certificate on host
-        SSL_KEY_PATH  = '/path/to/key.pem'    // Path to SSL key on host
+        HOST_PORT = '80'               // Host port
+        CONTAINER_HTTPS_PORT = '443'   // Container HTTPS port
     }
 
     stages {
@@ -35,7 +33,7 @@ pipeline {
                 echo "Running SonarQube analysis for Vite/React app..."
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                        sh '''
+                        sh """
                             echo "Using SCANNER_HOME=$SCANNER_HOME"
                             ${SCANNER_HOME}/bin/sonar-scanner \
                               -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
@@ -46,7 +44,7 @@ pipeline {
                               -Dsonar.sourceEncoding=UTF-8 \
                               -Dsonar.host.url=${SONAR_HOST_URL} \
                               -Dsonar.login=${SONAR_TOKEN}
-                        '''
+                        """
                     }
                 }
             }
@@ -64,9 +62,9 @@ pipeline {
         }
 
         // ---------- Deploy ----------
-        stage('Deploy Locally (HTTPS)') {
+        stage('Deploy Docker Container') {
             steps {
-                echo "Deploying ${IMAGE_NAME} locally with HTTPS..."
+                echo "Deploying ${IMAGE_NAME} locally on host port ${HOST_PORT}..."
                 sh """
                     docker stop ${IMAGE_NAME} || true
                     docker rm ${IMAGE_NAME} || true
@@ -74,8 +72,6 @@ pipeline {
                     docker run -d \
                       --name ${IMAGE_NAME} \
                       -p ${HOST_PORT}:${CONTAINER_HTTPS_PORT} \
-                      -v ${SSL_CERT_PATH}:/etc/ssl/certs/server.crt:ro \
-                      -v ${SSL_KEY_PATH}:/etc/ssl/private/server.key:ro \
                       --restart unless-stopped \
                       ${IMAGE_NAME}:latest
                 """
