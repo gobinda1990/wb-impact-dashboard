@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
-
 COPY . .
 RUN npm run build
 
@@ -14,8 +13,12 @@ FROM nginx:1.27-alpine
 # Copy built app
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom Nginx config for SPA routing
+# Copy Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# Copy self-signed certs (adjust path if needed)
+COPY /etc/ssl/certs/wb-impact-dashboard.crt /etc/ssl/certs/wb-impact-dashboard.crt
+COPY /etc/ssl/private/wb-impact-dashboard.key /etc/ssl/private/wb-impact-dashboard.key
+
+EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
