@@ -2,13 +2,13 @@ import { dashboardClient } from './apiClient';
 
 // Fetch project details from backend
 export const fetchProjects = async () => {
-  const res = await dashboardClient.get('/dashboard/project-details');
+  const res = await dashboardClient.get('/project-details');
   // The backend wraps the actual list in "data"
   return res.data?.data || [];
 };
 
 export const fetchUsers = async () => {
-  const res = await dashboardClient.get('/dashboard/user-details');
+  const res = await dashboardClient.get('/user-details');
  return res.data?.data || [];
 };
 
