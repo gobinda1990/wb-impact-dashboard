@@ -12,7 +12,7 @@ pipeline {
         // ===== Docker Build Variables =====
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
-        HOST_PORT = '80'               // Host port
+        HOST_PORT = '8084'             // Host port
         CONTAINER_HTTPS_PORT = '443'   // Container HTTPS port
     }
 
