@@ -24,7 +24,7 @@ dashboardClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshRes = await authClient.post('/auth/refresh-token');
+        const refreshRes = await authClient.post('/refresh-token');
         const newToken = refreshRes.data.accessToken;
         setToken(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
