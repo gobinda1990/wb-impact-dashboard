@@ -1,38 +1,44 @@
-// src/services/authService.js
 import { authClient } from './apiClient';
 
-// Save token & user info
-export const setToken = token => localStorage.setItem('token', token);
+// ---------- Token Management ----------
+export const setToken = (token) => localStorage.setItem('token', token);
 export const getToken = () => localStorage.getItem('token');
+export const removeToken = () => localStorage.removeItem('token');
 
-export const setUser = user => localStorage.setItem('user', JSON.stringify(user));
+export const setUser = (user) => localStorage.setItem('user', JSON.stringify(user));
 export const getUser = () => JSON.parse(localStorage.getItem('user') || '{}');
+export const removeUser = () => localStorage.removeItem('user');
 
-// Get all roles (array)
 export const getUserRoles = () => getUser()?.roles || [];
-
-// Return first role (for single-role use cases)
 export const getUserRole = () => getUserRoles()[0] || null;
 
+// ---------- Login ----------
 export const login = async (username, password, captchaInput, captcha) => {
-  // ✅ Include CAPTCHA fields in the payload
-  const res = await authClient.post('/login', {username,password,captchaInput, captcha,});
-  console.log('User:', getUser());
-  console.log('Roles:', getUserRoles()); 
+  const res = await authClient.post('/login', { username, password, captchaInput, captcha });
   if (res.data?.data) {
-    const userData = res.data.data;
-    // Save access token
-    if (userData.accessToken) setToken(userData.accessToken);
-    // Save full user info (roles, email, etc.)
+    const { accessToken, ...userData } = res.data.data;
+    if (accessToken) setToken(accessToken);
     setUser(userData);
-
     return userData;
   }
-
   throw new Error('Invalid login response');
 };
 
+// ---------- Refresh Token ----------
+export const refreshAccessToken = async () => {
+  try {
+    const res = await authClient.post('/refresh-token');
+    const { accessToken } = res.data?.data || {};
+    if (accessToken) setToken(accessToken);
+    return accessToken;
+  } catch (err) {
+    logout();
+    throw err;
+  }
+};
+
+// ---------- Logout ----------
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  removeToken();
+  removeUser();
 };
