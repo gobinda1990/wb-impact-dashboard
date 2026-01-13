@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  wb-impact-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wb-impact-dashboard
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount SSL certificates into the container
+      - /etc/ssl/certs/wb-impact-dashboard.crt:/etc/ssl/certs/wb-impact-dashboard.crt:ro
+      - /etc/ssl/private/wb-impact-dashboard.key:/etc/ssl/private/wb-impact-dashboard.key:ro
+    restart: unless-stopped
