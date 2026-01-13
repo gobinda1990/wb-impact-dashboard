@@ -11,8 +11,7 @@ pipeline {
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
         HOST_PORT = '8084'           // Frontend exposed port
-        CONTAINER_HTTPS_PORT = '443' // Internal container port
-        DOCKER_NETWORK = 'wb-network'
+        CONTAINER_HTTPS_PORT = '443' // Internal container port       
     }
 
     stages {
@@ -62,8 +61,7 @@ pipeline {
                     docker rm ${IMAGE_NAME} || true
 
                     docker run -d \
-                      --name ${IMAGE_NAME} \
-                      --network ${DOCKER_NETWORK} \
+                      --name ${IMAGE_NAME} \                     
                       -p ${HOST_PORT}:${CONTAINER_HTTPS_PORT} \
                       --restart unless-stopped \
                       ${IMAGE_NAME}:latest
