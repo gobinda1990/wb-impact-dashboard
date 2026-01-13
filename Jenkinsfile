@@ -12,8 +12,10 @@ pipeline {
         // ===== Docker Build Variables =====
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
-        CONTAINER_PORT = '8084'     // Exposed host port
-        APP_PORT = '443'            // Container HTTPS port
+        HOST_PORT = '80'           // Port on host machine
+        CONTAINER_HTTPS_PORT = '443' // Port inside container (HTTPS)
+        SSL_CERT_PATH = '/path/to/cert.pem'   // Path to SSL certificate on host
+        SSL_KEY_PATH  = '/path/to/key.pem'    // Path to SSL key on host
     }
 
     stages {
@@ -64,14 +66,16 @@ pipeline {
         // ---------- Deploy ----------
         stage('Deploy Locally (HTTPS)') {
             steps {
-                echo "Deploying ${IMAGE_NAME} locally with HTTPS enabled..."
+                echo "Deploying ${IMAGE_NAME} locally with HTTPS..."
                 sh """
                     docker stop ${IMAGE_NAME} || true
                     docker rm ${IMAGE_NAME} || true
 
                     docker run -d \
                       --name ${IMAGE_NAME} \
-                      -p ${CONTAINER_PORT}:443 \
+                      -p ${HOST_PORT}:${CONTAINER_HTTPS_PORT} \
+                      -v ${SSL_CERT_PATH}:/etc/ssl/certs/server.crt:ro \
+                      -v ${SSL_KEY_PATH}:/etc/ssl/private/server.key:ro \
                       --restart unless-stopped \
                       ${IMAGE_NAME}:latest
                 """
@@ -79,7 +83,6 @@ pipeline {
         }
     }
 
-    // ---------- Post Actions ----------
     post {
         always {
             echo 'Cleaning up workspace...'
