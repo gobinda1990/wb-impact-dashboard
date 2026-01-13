@@ -12,7 +12,7 @@ pipeline {
         // ===== Docker Build Variables =====
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
-        CONTAINER_PORT = '8084'     // Exposed port on host
+        CONTAINER_PORT = '8084'     // Exposed host port
         APP_PORT = '443'            // Container HTTPS port
     }
 
@@ -72,8 +72,6 @@ pipeline {
                     docker run -d \
                       --name ${IMAGE_NAME} \
                       -p ${CONTAINER_PORT}:443 \
-                      -v /etc/ssl/certs/wb-impact-dashboard.crt:/etc/ssl/certs/wb-impact-dashboard.crt:ro \
-                      -v /etc/ssl/private/wb-impact-dashboard.key:/etc/ssl/private/wb-impact-dashboard.key:ro \
                       --restart unless-stopped \
                       ${IMAGE_NAME}:latest
                 """
