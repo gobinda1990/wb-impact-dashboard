@@ -11,7 +11,8 @@ pipeline {
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
         HOST_PORT = '8084'           // Frontend exposed port
-        CONTAINER_HTTPS_PORT = '443' // Internal container port       
+        CONTAINER_HTTPS_PORT = '443' // Internal container port
+        DOCKER_NETWORK = 'my-network'
     }
 
     stages {
@@ -28,14 +29,14 @@ pipeline {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         sh """
-                            ${SCANNER_HOME}/bin/sonar-scanner \
-                              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                              -Dsonar.projectName="${SONAR_PROJECT_NAME}" \
-                              -Dsonar.sources=src \
-                              -Dsonar.exclusions=node_modules/**,dist/**,build/** \
-                              -Dsonar.language=js \
-                              -Dsonar.sourceEncoding=UTF-8 \
-                              -Dsonar.host.url=${SONAR_HOST_URL} \
+                            ${SCANNER_HOME}/bin/sonar-scanner
+                              -Dsonar.projectKey=${SONAR_PROJECT_KEY}
+                              -Dsonar.projectName="${SONAR_PROJECT_NAME}"
+                              -Dsonar.sources=src
+                              -Dsonar.exclusions=node_modules/**,dist/**,build/**
+                              -Dsonar.language=js
+                              -Dsonar.sourceEncoding=UTF-8
+                              -Dsonar.host.url=${SONAR_HOST_URL}
                               -Dsonar.login=${SONAR_TOKEN}
                         """
                     }
@@ -60,10 +61,10 @@ pipeline {
                     docker stop ${IMAGE_NAME} || true
                     docker rm ${IMAGE_NAME} || true
 
-                    docker run -d \
-                      --name ${IMAGE_NAME} \                     
-                      -p ${HOST_PORT}:${CONTAINER_HTTPS_PORT} \
-                      --restart unless-stopped \
+                    docker run -d
+                      --name ${IMAGE_NAME}
+                      -p ${HOST_PORT}:${CONTAINER_HTTPS_PORT}
+                      --restart unless-stopped
                       ${IMAGE_NAME}:latest
                 """
             }
