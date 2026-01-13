@@ -8,7 +8,7 @@ export const fetchProjects = async () => {
 };
 
 export const fetchUsers = async () => {
-  const res = await dashboardClient.get('/users/user-details');
+  const res = await dashboardClient.get('/user-details');
  return res.data?.data || [];
 };
 
