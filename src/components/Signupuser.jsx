@@ -1,19 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { dashboardClient } from "../services/apiClient";
-import {
-  FaSyncAlt,
-  FaUser,
-  FaVenusMars,
-  FaEnvelope,
-  FaPhone,
-  FaBriefcase,
-  FaIdCard,
-  FaCalendarAlt,
-  FaLock,
-  FaQuestionCircle,
-  FaRegLightbulb,
-} from "react-icons/fa";
+import {FaSyncAlt,FaUser,FaVenusMars,FaEnvelope,FaPhone,FaBriefcase,FaIdCard,FaCalendarAlt,FaLock,
+  FaQuestionCircle,FaRegLightbulb,} from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { isValid } from "date-fns";
@@ -59,7 +48,7 @@ export default function SignupUser() {
 
   const fetchDesig = async () => {
     try {
-      const response = await dashboardClient.get("/auth/designation_details");
+      const response = await dashboardClient.get("/signup/designation_details");
       setDesignations(response.data.data);
     } catch (err) {
       console.error("Error fetching designations:", err.message);
@@ -141,9 +130,7 @@ export default function SignupUser() {
     }
 
     try {
-      const response = await dashboardClient.post(
-        "/auth/signup",
-        formData,
+      const response = await dashboardClient.post("/signup",formData,
         { headers: { "Content-Type": "application/json" } }
       );
 

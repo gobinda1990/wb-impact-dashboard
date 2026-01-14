@@ -16,7 +16,7 @@ export const getUserRole = () => getUserRoles()[0] || null;
 
 export const login = async (username, password, captchaInput, captcha) => {
   // ✅ Include CAPTCHA fields in the payload
-  const res = await authClient.post('/auth/login', {username,password,captchaInput, captcha,});
+  const res = await authClient.post('/login', {username,password,captchaInput, captcha,});
   console.log('User:', getUser());
   console.log('Roles:', getUserRoles()); 
   if (res.data?.data) {
@@ -30,6 +30,19 @@ export const login = async (username, password, captchaInput, captcha) => {
   }
 
   throw new Error('Invalid login response');
+};
+
+// ---------- Refresh Token ----------
+export const refreshAccessToken = async () => {
+  try {
+    const res = await authClient.post('/refresh-token');
+    const { accessToken } = res.data?.data || {};
+    if (accessToken) setToken(accessToken);
+    return accessToken;
+  } catch (err) {
+    logout();
+    throw err;
+  }
 };
 
 export const logout = () => {

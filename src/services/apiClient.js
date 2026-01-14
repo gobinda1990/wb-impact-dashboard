@@ -2,14 +2,24 @@ import axios from 'axios';
 import { getToken, setToken, logout } from './authService';
 
 export const authClient = axios.create({
-  baseURL: 'http://10.153.43.8:8081/api',
+  baseURL: '/api/auth',
   withCredentials: true,
 });
 
 export const dashboardClient = axios.create({
-  baseURL: 'http://10.153.43.8:8082/api',
+  baseURL: '/api/dashboard',
   withCredentials: true,
 });
+
+// export const authClient = axios.create({
+//   baseURL: 'http://10.153.45.169:8081/api/auth',
+//   withCredentials: true,
+// });
+
+// export const dashboardClient = axios.create({
+//   baseURL: 'http://10.153.45.169:8082/api/dashboard',
+//   withCredentials: true,
+// });
 
 dashboardClient.interceptors.request.use(config => {
   const token = getToken();
@@ -24,7 +34,7 @@ dashboardClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshRes = await authClient.post('/auth/refresh-token');
+        const refreshRes = await authClient.post('/refresh-token');
         const newToken = refreshRes.data.accessToken;
         setToken(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
