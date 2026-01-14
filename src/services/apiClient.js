@@ -1,25 +1,25 @@
 import axios from 'axios';
 import { getToken, setToken, logout } from './authService';
 
-// export const authClient = axios.create({
-//   baseURL: '/api/auth',
-//   withCredentials: true,
-// });
-
-// export const dashboardClient = axios.create({
-//   baseURL: '/api/dashboard',
-//   withCredentials: true,
-// });
-
 export const authClient = axios.create({
-  baseURL: 'http://10.153.45.169:8081/api/auth',
+  baseURL: '/api/auth',
   withCredentials: true,
 });
 
 export const dashboardClient = axios.create({
-  baseURL: 'http://10.153.45.169:8082/api/dashboard',
+  baseURL: '/api/dashboard',
   withCredentials: true,
 });
+
+// export const authClient = axios.create({
+//   baseURL: 'http://10.153.45.169:8081/api/auth',
+//   withCredentials: true,
+// });
+
+// export const dashboardClient = axios.create({
+//   baseURL: 'http://10.153.45.169:8082/api/dashboard',
+//   withCredentials: true,
+// });
 
 dashboardClient.interceptors.request.use(config => {
   const token = getToken();
