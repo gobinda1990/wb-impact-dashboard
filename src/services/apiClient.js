@@ -11,6 +11,16 @@ export const dashboardClient = axios.create({
   withCredentials: true,
 });
 
+// export const authClient = axios.create({
+//   baseURL: 'http://10.153.45.169:8081/api/auth',
+//   withCredentials: true,
+// });
+
+// export const dashboardClient = axios.create({
+//   baseURL: 'http://10.153.45.169:8082/api/dashboard',
+//   withCredentials: true,
+// });
+
 dashboardClient.interceptors.request.use(config => {
   const token = getToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
