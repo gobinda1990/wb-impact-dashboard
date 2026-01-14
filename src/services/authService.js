@@ -1,26 +1,34 @@
+// src/services/authService.js
 import { authClient } from './apiClient';
 
-// ---------- Token Management ----------
-export const setToken = (token) => localStorage.setItem('token', token);
+// Save token & user info
+export const setToken = token => localStorage.setItem('token', token);
 export const getToken = () => localStorage.getItem('token');
-export const removeToken = () => localStorage.removeItem('token');
 
-export const setUser = (user) => localStorage.setItem('user', JSON.stringify(user));
+export const setUser = user => localStorage.setItem('user', JSON.stringify(user));
 export const getUser = () => JSON.parse(localStorage.getItem('user') || '{}');
-export const removeUser = () => localStorage.removeItem('user');
 
+// Get all roles (array)
 export const getUserRoles = () => getUser()?.roles || [];
+
+// Return first role (for single-role use cases)
 export const getUserRole = () => getUserRoles()[0] || null;
 
-// ---------- Login ----------
 export const login = async (username, password, captchaInput, captcha) => {
-  const res = await authClient.post('/login', { username, password, captchaInput, captcha });
+  // ✅ Include CAPTCHA fields in the payload
+  const res = await authClient.post('/login', {username,password,captchaInput, captcha,});
+  console.log('User:', getUser());
+  console.log('Roles:', getUserRoles()); 
   if (res.data?.data) {
-    const { accessToken, ...userData } = res.data.data;
-    if (accessToken) setToken(accessToken);
+    const userData = res.data.data;
+    // Save access token
+    if (userData.accessToken) setToken(userData.accessToken);
+    // Save full user info (roles, email, etc.)
     setUser(userData);
+
     return userData;
   }
+
   throw new Error('Invalid login response');
 };
 
@@ -37,8 +45,7 @@ export const refreshAccessToken = async () => {
   }
 };
 
-// ---------- Logout ----------
 export const logout = () => {
-  removeToken();
-  removeUser();
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
 };
