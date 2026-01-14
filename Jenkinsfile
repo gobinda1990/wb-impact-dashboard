@@ -12,10 +12,12 @@ pipeline {
         // ===== Docker Build Variables =====
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
-        HOST_HTTP_PORT = '8084'      // HTTP (for redirect)
-        HOST_HTTPS_PORT = '8443'    // HTTPS exposed on host
-        CONTAINER_HTTP_PORT = '80'
-        CONTAINER_HTTPS_PORT = '443'
+
+        // Expose container ports to host
+        HOST_HTTP_PORT = '8084'       // Host port for HTTP (redirects to HTTPS)
+        HOST_HTTPS_PORT = '8443'      // Host port for HTTPS access
+        CONTAINER_HTTP_PORT = '80'    // Container port for HTTP
+        CONTAINER_HTTPS_PORT = '443'  // Container port for HTTPS
     }
 
     stages {
@@ -64,9 +66,9 @@ pipeline {
         }
 
         // ---------- Deploy ----------
-        stage('Deploy Locally (HTTPS on 443)') {
+        stage('Deploy Locally (HTTP:8084, HTTPS:8443)') {
             steps {
-                echo "Deploying ${IMAGE_NAME} with HTTPS on port 443..."
+                echo "Deploying ${IMAGE_NAME} locally on ports 8084 (HTTP) and 8443 (HTTPS)..."
                 sh """
                     docker stop ${IMAGE_NAME} || true
                     docker rm ${IMAGE_NAME} || true
