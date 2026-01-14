@@ -124,7 +124,7 @@ export const fetchOffices = async () => {
 
 export const fetchProjects = async () => {
   try {
-    const res = await dashboardClient.get('/dashboard/project-details');
+    const res = await dashboardClient.get('/project-details');
     return res.data?.data || [];
   } catch (err) {
     console.error('Error fetching projects:', err);
@@ -163,34 +163,6 @@ export const assignAddProjects = async (assignData) => {
     throw err;
   }
 };
-
-export const releaseModule = async ({ hrmsCode, projectId, roleId }) => {
-  try {
-    const res = await dashboardClient.post('/users/releaseModule', { hrmsCode, projectId, roleId });
-    return res.data; // returns backend JSON { success, message, ... }
-  } catch (err) {
-    console.error('Error releasing module:', err);
-    throw err;
-  }
-};
-
-// ------------------------- RELEASE POSTING -------------------------
-
-export const releasePosting = async ({ hrmsCode, postingType, officeId }) => {
-  try {
-    const res = await dashboardClient.post('/users/releasePosting', {
-      hrmsCode,
-      postingType,
-      officeId,
-    });
-    return res.data; // expects backend JSON like { success, message }
-  } catch (err) {
-    console.error('Error releasing posting:', err);
-    throw err;
-  }
-};
-
-
 // ------------------------- RELEASE EMPLOYEE -------------------------
 
 export const doReleaseEmp = async (releaseData) => {
