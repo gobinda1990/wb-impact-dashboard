@@ -13,7 +13,7 @@ pipeline {
         IMAGE_NAME = 'wb-impact-dashboard'
         IMAGE_TAG  = "${BUILD_NUMBER}"
         HOST_HTTP_PORT = '8084'      // HTTP (for redirect)
-        HOST_HTTPS_PORT = '443'    // HTTPS exposed on host
+        HOST_HTTPS_PORT = '8443'    // HTTPS exposed on host
         CONTAINER_HTTP_PORT = '80'
         CONTAINER_HTTPS_PORT = '443'
     }
